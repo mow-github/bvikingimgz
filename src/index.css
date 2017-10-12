@@ -1,0 +1,23 @@
+.modal-footer{
+  display: block;
+}
+
+
+/* style bvikingimgz text */
+a:hover{
+  text-decoration: none;
+}
+.bvkingimgz_image_text{
+  color: black;
+  position: relative;
+  left: -3rem;
+  font-family: "Arial";
+  font-size: larger;
+}
+.bvkingimgz_image_text_small{
+  color: black;
+  position: relative;
+  left: -1.5rem;
+  font-family: "Arial";
+  font-size: 0.5rem;
+}
