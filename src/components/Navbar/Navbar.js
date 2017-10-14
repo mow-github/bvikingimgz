@@ -25,14 +25,15 @@ class Navbar extends Component{
               <Link className="nav-item nav-link ml-5" to="/">Bvikingimgz</Link>
 
               <form className="form-inline hidden-sm-down">
-                <input className="form-control" type="text" placeholder="Search" />
+                <input className="form-control" type="text" placeholder="Filter imgz" />
                 <div className="input-group-addon" ><span className="fa fa-search"></span></div>
               </form>
 
             </div>
             <div className="navbar-nav ml-auto">
               {!this.props.users && <Link className="nav-item nav-link ml-5" to="/register">Register</Link> }
-              <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#modalLogin">login modal</button>
+              {!this.props.users && <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#modalLogin">login modal</button>}
+              {this.props.users && <button className="btn btn-danger" onClick={this.props.signOut}>signOut</button> }
             </div>
           </div>
 

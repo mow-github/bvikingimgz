@@ -25,7 +25,7 @@ class FormRegister extends Component{
         feedback_msg: null,
       },
       password:{
-        value: 123456,
+        value: "123456",
         classMsg: "warning",
         feedback_msg: null,
       },
@@ -35,7 +35,7 @@ class FormRegister extends Component{
         feedback_msg: null,
       },
       role:{
-        value: null,
+        value: "subscriber",
         classMsg: "warning",
         feedback_msg: null,
       }
@@ -76,17 +76,16 @@ class FormRegister extends Component{
     e.preventDefault();
 
     const { email, password,name,role } = this.state;
-console.log( this.state );
     firebase
       .auth()
       .createUserWithEmailAndPassword(email.value,password.value)
       .then((user) => {
-        console.log( user );
 
         const newUser = {
           name: name.value,
           email: user.email,
           role: role.value,
+          //uid: user.uid
         };
         firebase.database().ref(`users/${user.uid}`).set(newUser);
 

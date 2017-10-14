@@ -18,7 +18,7 @@
 * Firebase v3 ( realtime-DB )
 
 ###### Installation example:
-<pre>git clone https://github.com/mow-github/bvikingogram.git</pre>
+<pre>git clone https://github.com/mow-github/bvikingimgz.git</pre>
 
 ###### Instructions:
 1. `npm install / yarn install`
@@ -30,7 +30,7 @@
 * [react-router v4 setup](https://medium.com/@pshrmn/a-simple-react-router-v4-tutorial-7f23ff27adf)
 * [react-router migration to v4](https://github.com/ReactTraining/react-router/blob/25776d4dc89b8fb2f575884749766355992116b5/packages/react-router/docs/guides/migrating.md#the-router)
 * [react-router redirect](https://stackoverflow.com/questions/43230194/how-to-use-redirect-in-the-new-react-router-dom-of-reactjs)
-
+* [Random Lorem image](https://picsum.photos/)
 
 <hr>
 

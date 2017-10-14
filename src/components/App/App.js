@@ -14,21 +14,32 @@ import Modal from "../Modal/Modal";
 import ModalLogin from "../Modal/ModalLogin";
 import ModalImage from "../Modal/ModalImage";
 
+import Error from "../Error/Error";
+
+import faker from "faker";
+
 class App extends Component {
 
   state = {
 
+    dev_flag: true,
+
     image_modal:{
       // update_image_modal fn updates data here
     },
-    email: "a@a.se",
-    password: "123456",
 
   };
 
 
   componentDidMount(){
     this.props.actions.userChanged();
+
+    // listen for POST "added" in FB collection
+    this.props.actions.postImagesListener();
+    this.props.actions.postUserListener();
+
+    // listen for DELETE "removed" in FB collection
+    this.props.actions.deleteImageListener();
   }
 
   update_image_modal = (image_modal) => {
@@ -36,49 +47,10 @@ class App extends Component {
   };
 
 
-  signIn = e => {
 
-    const { email, password } = this.state;
-
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email,password)
-      .catch(error => {
-        console.log(error);
-        // show friendly user error msg
-      })
-
-  };
 
   signOut = () => {
     firebase.auth().signOut();
-  };
-
-  componentDidUpdate(){
-    // console.log( this.props.redirects );
-  }
-
-  registerGithub = e => {
-
-  console.log("github register");
-
-    let provider = new firebase.auth.GithubAuthProvider();
-    firebase.auth().signInWithPopup(provider)
-      .then((authData) => {
-
-        console.log(authData);
-        const { user, additionalUserInfo } = authData;
-
-        const newUser = {
-          name: additionalUserInfo.profile.name,
-          email: additionalUserInfo.profile.email,
-          role: "subscriber",
-        };
-        firebase.database().ref(`users/${user.uid}`).set(newUser);
-
-      })
-      .catch( err => console.log(err) )
-
   };
 
   render() {
@@ -86,28 +58,50 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Navbar />
+        <Navbar signOut={this.signOut} />
+        <Error errors={this.props.errors} updateError={this.props.actions.updateError} />
         <Header />
 
-
-        {!this.props.users &&
-          <button className="btn btn-danger" onClick={this.registerGithub}>register Github</button>
-        }
-
-        {!this.props.users &&
-          <button className="btn btn-primary" onClick={this.signIn}>signIn</button>
-        }
-
-        {this.props.users && <button className="btn btn-danger" onClick={this.signOut}>signOut</button> }
-
-        {this.props.users &&
-          <Images update_image_modal={this.update_image_modal} />
-        }
+        <Images update_image_modal={this.update_image_modal} />
 
         <Modal>
-          <ModalLogin/>
+          <ModalLogin />
           <ModalImage image_modal={this.state.image_modal} />
         </Modal>
+
+        {this.state.dev_flag &&
+        <div>
+          <h4>dev buttons</h4>
+          <button className="btn btn-warning" onClick={this.props.actions.removeAllUsers}>Remove * FB users (not auth DB)</button><br/>
+          <button className="btn btn-warning" onClick={this.props.actions.removeLoggedinUserFB}>Remove 1x logged in FB user (both places)</button><br/><br/>
+
+          <button className="btn btn-warning" onClick={() => {
+
+            const imgLength       = this.props.images.length,
+                  src             = `https://picsum.photos/200/200?random=${imgLength}`,
+                  title           = faker.lorem.words(),
+                  alt             = `img${imgLength}`,
+                  thumbs_up_tot   = faker.random.number(100),
+                  thumbs_down_tot = faker.random.number(100),
+                  comments_tot    = faker.random.number(100);
+
+            const imageObj = {
+                  src,
+                  alt,
+                  title,
+                  thumbs_up_tot,
+                  thumbs_down_tot,
+                  comments_tot,
+            };
+
+            this.props.actions.postImages(imageObj)
+          }}>postImagesFB</button><br/>
+          <button className="btn btn-warning" onClick={this.props.actions.removeAllImages}>Remove * FB images</button><br/>
+
+
+
+        </div>
+        }
 
       </div>
     );
@@ -117,6 +111,8 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     users: state.users,
+    errors: state.errors,
+    images: state.images,
   };
 }
 
