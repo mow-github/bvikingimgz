@@ -3,12 +3,14 @@ import users from './usersReducer';
 import redirects from './redirectReducer';
 import errors from './errorsReducer';
 import images from './imagesReducer';
+import counters from './countersReducer';
 
 const rootReducer = combineReducers({
   users,
   redirects,
   errors,
-  images
+  images,
+  counters
 });
 
 export default rootReducer;

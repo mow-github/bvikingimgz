@@ -100,6 +100,34 @@ class FormRegister extends Component{
       })
   };
 
+  registerOAuth = (provider) => {
+
+    console.log("provider register - registerOAuth");
+
+    firebase.auth().signInWithPopup(provider)
+      .then((authData) => {
+
+        console.log(authData);
+        const { user, additionalUserInfo } = authData;
+
+        const newUser = {
+          name: additionalUserInfo.profile.name,
+          email: additionalUserInfo.profile.email,
+          role: "subscriber",
+        };
+
+        firebase.database().ref(`users/${user.uid}`).set(newUser);
+
+      }).catch((error) => {
+      console.log(error);
+      let password = this.state.password;
+      password.classMsg = "danger";
+      password.feedback_msg = error.message;
+      this.setState({ password })
+    })
+
+  };
+
 
   render(){
 
@@ -163,6 +191,12 @@ class FormRegister extends Component{
           <input type="submit" className="form-control form-control-warning" value="Register" />
 
         </form>
+
+        <div className="row my-5">
+          <button className="btn btn-primary col-6 py-4" onClick={ () => this.registerOAuth(new firebase.auth.GithubAuthProvider()) }>Register with Github</button>
+          <button className="btn btn-primary col-6 py-4" onClick={ () => this.registerOAuth(new firebase.auth.TwitterAuthProvider()) }>Register with Twitter</button>
+        </div>
+
       </div>
     );
   }

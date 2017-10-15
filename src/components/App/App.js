@@ -16,7 +16,6 @@ import ModalImage from "../Modal/ModalImage";
 
 import Error from "../Error/Error";
 
-import faker from "faker";
 
 class App extends Component {
 
@@ -55,12 +54,12 @@ class App extends Component {
 
   render() {
 
-
     return (
       <div className="App">
         <Navbar signOut={this.signOut} />
         <Error errors={this.props.errors} updateError={this.props.actions.updateError} />
-        <Header />
+        <Header counters={this.props.counters} />
+
 
         <Images update_image_modal={this.update_image_modal} />
 
@@ -75,27 +74,7 @@ class App extends Component {
           <button className="btn btn-warning" onClick={this.props.actions.removeAllUsers}>Remove * FB users (not auth DB)</button><br/>
           <button className="btn btn-warning" onClick={this.props.actions.removeLoggedinUserFB}>Remove 1x logged in FB user (both places)</button><br/><br/>
 
-          <button className="btn btn-warning" onClick={() => {
 
-            const imgLength       = this.props.images.length,
-                  src             = `https://picsum.photos/200/200?random=${imgLength}`,
-                  title           = faker.lorem.words(),
-                  alt             = `img${imgLength}`,
-                  thumbs_up_tot   = faker.random.number(100),
-                  thumbs_down_tot = faker.random.number(100),
-                  comments_tot    = faker.random.number(100);
-
-            const imageObj = {
-                  src,
-                  alt,
-                  title,
-                  thumbs_up_tot,
-                  thumbs_down_tot,
-                  comments_tot,
-            };
-
-            this.props.actions.postImages(imageObj)
-          }}>postImagesFB</button><br/>
           <button className="btn btn-warning" onClick={this.props.actions.removeAllImages}>Remove * FB images</button><br/>
 
 
@@ -110,9 +89,10 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    users: state.users,
-    errors: state.errors,
-    images: state.images,
+    users:    state.users,
+    errors:   state.errors,
+    images:   state.images,
+    counters: state.counters,
   };
 }
 

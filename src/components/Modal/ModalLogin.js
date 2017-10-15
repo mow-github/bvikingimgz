@@ -38,32 +38,25 @@ class ModalLogin extends Component {
       })
 
   };
-  registerOAuth = (provider) => {
 
-    console.log("provider register - registerOAuth");
+
+  loginOAuth = (provider) => {
+
+    console.log("provider login - loginOAuth");
 
     firebase.auth().signInWithPopup(provider)
       .then((authData) => {
-
         console.log(authData);
-        const { user, additionalUserInfo } = authData;
-
-        const newUser = {
-          name: additionalUserInfo.profile.name,
-          email: additionalUserInfo.profile.email,
-          role: "subscriber",
-        };
-        firebase.database().ref(`users/${user.uid}`).set(newUser);
-
       }).catch((error) => {
-        console.log(error);
-        let password = this.state.password;
-        password.classMsg = "danger";
-        password.feedback_msg = error.message;
-        this.setState({ password })
-      })
+      console.log(error);
+      let password = this.state.password;
+      password.classMsg = "danger";
+      password.feedback_msg = error.message;
+      this.setState({ password })
+    })
 
   };
+
   onChange = e => {
 
     let newState = this.state[e.target.name];
@@ -126,8 +119,8 @@ class ModalLogin extends Component {
             </div>
             <div className="modal-footer">
               <div className="row px-3">
-                <button className="btn btn-danger col-12" onClick={ () => this.registerOAuth(new firebase.auth.GithubAuthProvider()) }>Login in with Github</button>
-                <button className="btn btn-primary col-12" onClick={ () => this.registerOAuth(new firebase.auth.TwitterAuthProvider()) }>Login in with Twitter</button>
+                <button className="btn btn-primary col-12 py-4" onClick={ () => this.loginOAuth(new firebase.auth.GithubAuthProvider()) }>Login with Github</button>
+                <button className="btn btn-primary col-12 py-4" onClick={ () => this.loginOAuth(new firebase.auth.TwitterAuthProvider()) }>Login with Twitter</button>
               </div>
             </div>
           </div>

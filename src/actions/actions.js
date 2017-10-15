@@ -14,8 +14,39 @@ export function userChanged(){
 
     return firebase.auth().onAuthStateChanged((user) => {
       if(user){
+
         firebase.database().ref(`users/${user.uid}`).once("value").then((user) => {
           dispatch({ type: actionType.SIGN_IN, user: user.val() });
+          return user.val().images;
+        }).then((imagesIndexObj) => {
+
+/*          if(imagesIndexObj){
+
+            const imagesIndexArr = Object.keys(imagesIndexObj);
+            let imagesArray = [];
+            imagesIndexArr.forEach((imgid) => {
+              firebase.database().ref(`images/${imgid}`).once("value").then((userImg) => {
+
+                const image = {...userImg.val(), imgid: userImg.key};
+                imagesArray.push(image);
+
+                dispatch({
+                  type: actionType.POST_USER_IMAGE,
+                  image
+                });
+
+              })
+            });
+
+/!*            dispatch({
+              type: actionType.POST_USER_IMAGE,
+              image: imagesArray
+            });*!/
+
+
+          }*/
+
+
         })
       }else{
         dispatch({ type: actionType.SIGN_OUT, user: "" });
@@ -107,30 +138,6 @@ export function postImages(imageObj) {
 
 
 
-
-
-
-
-
-export function postImagesListener(){
-  console.log( "postImagesListener" );
-
-  return function(dispatch){
-    firebase.database().ref("images")
-      .on("child_added", (ss) => {
-
-        //console.log( ss );
-        const image = {...ss.val(), imgid: ss.key};
-        dispatch({
-          type: actionType.POST_IMAGE,
-          image: image
-        });
-
-      })
-  }
-}
-
-
 export function removeAllImages(){
 
   // TODO add/update this fn so it remove images from user index as well etc | 1. fetch every image-key for this user and ...
@@ -143,7 +150,6 @@ export function removeAllImages(){
     });
   };
 }
-
 export function deleteImageListener(){
   return function(dispatch){
     firebase.database().ref("images")
@@ -162,18 +168,68 @@ export function deleteImageListener(){
           dispatch({type: "FETCH_ERROR", error})
         });
 
+        const currentUser = firebase.auth().currentUser;
+        if( currentUser ){
+          dispatch({
+            type: actionType.REMOVE_USER_IMAGE_INDEX,
+            imgid: imgObj.imgid
+          });
+        }
+
       })
   }
 }
+export function postImagesListener(){
+  console.log( "postImagesListener" );
 
+  return function(dispatch){
+    firebase.database().ref("images")
+      .on("child_added", (ss) => {
+        const image = {...ss.val(), imgid: ss.key};
+        dispatch({
+          type: actionType.POST_IMAGE,
+          image: image
+        });
+
+        const currentUser = firebase.auth().currentUser;
+        if( currentUser ){
+          dispatch({
+            type: actionType.POST_USER_IMAGE_INDEX,
+            imgid: image.imgid
+          });
+        }
+
+      })
+  }
+}
 export function postUserListener(){
   console.log( "postUserListener" );
 
   return function(dispatch){
-    firebase.database().ref("users/images")
+    firebase.database().ref("users")
       .on("child_added", (ss) => {
 
-        console.log( ss );
+        const imgKeysObj      = ss.child("images").val();
+        const commentKeysObj  = ss.child("comments").val();
+
+        if( imgKeysObj ) {
+          dispatch({
+            type: actionType.COUNT_IMAGE,
+            imgCount: Object.keys(imgKeysObj).length
+          });
+        }
+
+        if( commentKeysObj ){
+          dispatch({
+            type: actionType.COUNT_COMMENT,
+            commentCount: Object.keys( commentKeysObj ).length
+          });
+        }
+
+        dispatch({
+          type: actionType.COUNT_USER,
+          userCount: 1
+        });
 
 
       })
@@ -208,5 +264,11 @@ export function postUserListener(){
 *   child_added      // POST
 *   child_changed    // UPDATE
 *   child_removed    // DELETE
+*
+*   ss.numChildren()  // count x children in a collection
+*
+*   firebase.User     // a fn with user data ? add .val() ?
+*
+*   firebase.database.enableLogging(true/false);
 *
 * */
