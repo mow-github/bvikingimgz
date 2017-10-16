@@ -105,6 +105,38 @@ export function updateError() {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function updateImageThumbUp(imageObj) {
+
+  return function(dispatch){
+
+
+    try{
+      const uid = firebase.auth().currentUser.uid;
+      console.log(uid);
+      console.log("FIX this.. vote and text CONNECTED to a user");
+
+    }catch(error){ dispatch({type: "FETCH_ERROR", error}) }
+
+
+
+  };
+
+}
+
+// ------------------------------------- IMAGES -----------------------------------------
 export function postImages(imageObj) {
 
   // POST 1x image to "images" collection
@@ -120,10 +152,10 @@ export function postImages(imageObj) {
       firebase.database().ref("images").push(imageObjUpd).then((image) => {
 
         // replace this dispatch with a listener ? images changes in FB ?
-/*        dispatch({
-          type: actionType.POST_IMAGE,
-          image: imageObjUpd
-        });*/
+        /*        dispatch({
+                  type: actionType.POST_IMAGE,
+                  image: imageObjUpd
+                });*/
         return image.key;
       }).then((imgid) => {
         firebase.database().ref(`users/${uid}/images/${imgid}`).set({[imgid]: true})
@@ -135,9 +167,55 @@ export function postImages(imageObj) {
   };
 
 }
+export function removeImage(image, currentUserRole){
+  console.log("---removeImage");
+  return function(dispatch){
+
+    if(firebase.auth().currentUser){
+
+      const currentUserUid = firebase.auth().currentUser.uid;
+
+      let flag = false;
+      if(currentUserRole === "admin"){
+        // full access
+        console.log("just a admin -- removeImage");
+        flag = true;
+      }else if( currentUserRole === "subscriber" && currentUserUid === image.uid ){
+        // access to currentUser comments
+        console.log("subscriber and owner of the image -- removeImage");
+        flag = true;
+      }else{
+        const msg = "You are not the author or a admin";
+        dispatch({type: "FETCH_ERROR", error:{message: msg} })
+      }
+
+      if(flag) {
+        console.log("FlAG TRUE");
+        console.log(image);
+
+        if(image.comments){
+          const commentsArray = Object.keys(image.comments);
+          commentsArray.forEach((cid) => {
+            firebase.database().ref(`comments/${cid}`).remove();
+            firebase.database().ref(`users/${image.uid}/comments/${cid}`).remove();
+          });
+        }
 
 
+        firebase.database().ref(`images/${image.imgid}`).remove().then(() => {
+        }).then(() => {
+          firebase.database().ref(`users/${image.uid}/images/${image.imgid}`).remove();
+        }).then(() => {
+          console.log("images/image.imgid");
+          console.log("users/image.uid/images/image.imgid removed");
+        }).catch(error =>dispatch({type: "FETCH_ERROR", error}))
 
+      }
+
+    }
+
+  };
+}
 export function removeAllImages(){
 
   // TODO add/update this fn so it remove images from user index as well etc | 1. fetch every image-key for this user and ...
@@ -149,6 +227,223 @@ export function removeAllImages(){
       dispatch({type: "FETCH_ERROR", error})
     });
   };
+}
+// ------------------------------------- IMAGES -----------------------------------------
+
+// ------------------------------------- COMMENT -----------------------------------------
+export function getComments(imgid) {
+
+  return function(dispatch){
+
+    if(firebase.auth().currentUser){
+
+      firebase.database().ref(`images/${imgid}/comments`).once("value").then((cidIndices) => {
+
+        if(!cidIndices.val()){
+          dispatch({
+            type: actionType.GET_COMMENT_ALL,
+            comment: []
+          });
+          throw Error("this image has no comments");
+        }
+        const cidIndicesArray = Object.keys(cidIndices.val());
+
+        const tmpArray = [];
+        firebase.database().ref(`comments`).once("value").then((comments) => {
+          cidIndicesArray.forEach((cid) => {
+            //console.log( cid );
+            const commentObj = {...comments.val()[cid], cid};
+            tmpArray.push(commentObj);
+          });
+
+          dispatch({
+            type: actionType.GET_COMMENT_ALL,
+            comment: tmpArray
+          });
+
+        })
+
+
+      }).catch(error =>dispatch({type: "FETCH_ERROR", error}))
+
+    }else{
+      // message
+      const msg = "You are not logged in.. unable to fetch comments";
+      console.log(msg);
+      // hmm, unable to exec due to rendering component ?
+      // dispatch({type: "FETCH_ERROR", error:{message: msg} })
+    }
+
+  };
+
+}
+export function postComment(commentObj) {
+
+  return function(dispatch){
+
+    try{
+
+      const {uid, email} = firebase.auth().currentUser;
+      commentObj.uid = uid;
+      commentObj.email = email;
+
+      firebase.database().ref("comments").push(commentObj).then((comment) => {
+
+        const commentObjUpd = {...commentObj, cid: comment.key};
+console.log( ",", commentObjUpd );
+        dispatch({
+          type: actionType.POST_COMMENT,
+          comment: commentObjUpd
+        });
+
+        dispatch({
+          type: actionType.PATCH_IMAGE_POST_COMMENT_INDEX,
+          comment: commentObjUpd
+        });
+
+        return comment.key;
+      }).then((cid) => {
+        firebase.database().ref(`users/${uid}/comments/${cid}`).set({[cid]: true});
+        firebase.database().ref(`images/${commentObj.imgid}/comments/${cid}`).set({[cid]: true})
+      }).catch(error =>dispatch({type: "FETCH_ERROR", error}))
+
+    }catch(error){ dispatch({type: "FETCH_ERROR", error}) }
+
+  };
+
+}
+export function removeComment(comment, currentUserRole) {
+
+  /*
+  * currentUserRole:  admin / subscriber
+  *   - IF subscriber can remove: firebase.auth().currentUser.uid === comment.uid  // author of the comment
+  *   - IF admin can remove: if logged in // remove every comment
+  *
+  *
+  * */
+
+  return function(dispatch){
+
+
+    if(firebase.auth().currentUser){
+
+      const currentUserUid = firebase.auth().currentUser.uid;
+
+      let flag = false;
+      if(currentUserRole === "admin"){
+        // full access
+        console.log("just a admin -- removeComment");
+        flag = true;
+      }else if( currentUserRole === "subscriber" && currentUserUid === comment.uid ){
+        // access to currentUser comments
+        console.log("subscriber and owner of the comment -- removeComment");
+        flag = true;
+      }else{
+        const msg = "You are not the author or a admin";
+        dispatch({type: "FETCH_ERROR", error:{message: msg} })
+      }
+
+      if(flag) {
+        console.log("FlAG TRUE");
+        console.log(comment);
+
+        firebase.database().ref(`comments/${comment.cid}`).remove().then(() => {
+        }).then(() => {
+          firebase.database().ref(`images/${comment.imgid}/comments/${comment.cid}`).remove();
+        }).then(() => {
+          firebase.database().ref(`users/${comment.uid}/comments/${comment.cid}`).remove();
+        }).then(() => {
+          console.log("comments/cid removed");
+          console.log("images/imgid/comments/cd removed");
+          console.log("users/uid/comments/cid removed");
+        }).catch(error =>dispatch({type: "FETCH_ERROR", error}))
+
+      }
+
+    }
+
+
+  };
+
+}
+export function updateComment(comment, currentUserRole) {
+
+  /*
+  * currentUserRole:  admin / subscriber
+  *   - IF subscriber can remove: firebase.auth().currentUser.uid === comment.uid  // author of the comment
+  *   - IF admin can remove: if logged in // remove every comment
+  *
+  *
+  * */
+
+  return function(dispatch){
+
+
+    if(firebase.auth().currentUser){
+
+      const currentUserUid = firebase.auth().currentUser.uid;
+
+      let flag = false;
+      if(currentUserRole === "admin"){
+        // full access
+        console.log("just a admin -- updateComment");
+        flag = true;
+      }else if( currentUserRole === "subscriber" && currentUserUid === comment.uid ){
+        // access to currentUser comments
+        console.log("subscriber and owner of the comment -- updateComment");
+        flag = true;
+      }else{
+        const msg = "You are not the author or a admin";
+        dispatch({type: "FETCH_ERROR", error:{message: msg} })
+      }
+
+      if(flag) {
+        console.log("FlAG TRUE");
+
+        console.log(comment);
+        // we add a extra key/value: cid ( must exist.. so the path works, not neceassry in the patch )
+        firebase.database().ref(`comments/${comment.cid}`).set(comment).then(() => {
+
+        }).catch(error =>dispatch({type: "FETCH_ERROR", error}))
+
+      }
+
+    }
+
+
+  };
+
+}
+// ------------------------------------- COMMENT -----------------------------------------
+
+// ------------------------------------- LISTENER IMAGES -----------------------------------------
+export function postImagesListener(){
+  console.log( "postImagesListener" );
+
+  return function(dispatch){
+    firebase.database().ref("images")
+      .on("child_added", (ss) => {
+        const image = {...ss.val(), imgid: ss.key};
+        dispatch({
+          type: actionType.POST_IMAGE,
+          image: image
+        });
+
+        dispatch({
+          type: actionType.COUNT_IMAGE,
+          imgCount: 1
+        });
+
+        const currentUser = firebase.auth().currentUser;
+        if( currentUser ){
+          dispatch({
+            type: actionType.POST_USER_IMAGE_INDEX,
+            imgid: image.imgid
+          });
+        }
+
+      })
+  }
 }
 export function deleteImageListener(){
   return function(dispatch){
@@ -163,7 +458,12 @@ export function deleteImageListener(){
 
         firebase.database().ref(`users/${imgObj.uid}/images/${imgObj.imgid}`).remove().then(() => {
           // TODO move this to another fn ?.
-          console.log("rm user images index");
+
+          dispatch({
+            type: actionType.COUNT_IMAGE,
+            imgCount: -1
+          });
+
         }).catch((error) => {
           dispatch({type: "FETCH_ERROR", error})
         });
@@ -179,29 +479,78 @@ export function deleteImageListener(){
       })
   }
 }
-export function postImagesListener(){
-  console.log( "postImagesListener" );
+export function updateImagesListener(){
+  console.log( "updateImagesListener" );
 
   return function(dispatch){
     firebase.database().ref("images")
-      .on("child_added", (ss) => {
+      .on("child_changed", (ss) => {
         const image = {...ss.val(), imgid: ss.key};
+
         dispatch({
-          type: actionType.POST_IMAGE,
+          type: actionType.PATCH_IMAGE,
           image: image
         });
-
-        const currentUser = firebase.auth().currentUser;
-        if( currentUser ){
-          dispatch({
-            type: actionType.POST_USER_IMAGE_INDEX,
-            imgid: image.imgid
-          });
-        }
 
       })
   }
 }
+// ------------------------------------- LISTENER IMAGES -----------------------------------------
+
+// ------------------------------------- LISTENER COMMENTS -----------------------------------------
+/*export function postCommentsListener(){
+  console.log( "postCommentsListener" );
+
+  return function(dispatch){
+    firebase.database().ref("comments")
+      .on("child_added", (ss) => {
+
+        const comment = {...ss.val(), cid: ss.key};
+/!*        dispatch({
+          type: actionType.POST_IMAGE,
+          image: image
+        });*!/
+
+        console.log( comment );
+
+
+      })
+  }
+}*/
+export function removeCommentsListener(){
+  console.log( "removeCommentsListener" );
+
+  return function(dispatch){
+    firebase.database().ref("comments").on("child_removed", (ss) => {
+      const cid = ss.key;
+
+        dispatch({
+          type: actionType.REMOVE_COMMENT,
+          cid
+        });
+
+      })
+  }
+}
+export function updateCommentsListener(){
+  console.log( "updateCommentsListener" );
+
+  return function(dispatch){
+    firebase.database().ref("comments").on("child_changed", (ss) => {
+      const cid = ss.key;
+      console.log("-----", cid, ss.val() );
+
+      dispatch({
+        type: actionType.PATCH_COMMENT,
+        comment: {...ss.val(), cid}
+      });
+
+    })
+  }
+}
+// ------------------------------------- LISTENER COMMENTS -----------------------------------------
+
+// ------------------------------------- LISTENER USER -----------------------------------------
 export function postUserListener(){
   console.log( "postUserListener" );
 
@@ -209,15 +558,15 @@ export function postUserListener(){
     firebase.database().ref("users")
       .on("child_added", (ss) => {
 
-        const imgKeysObj      = ss.child("images").val();
+        // const imgKeysObj      = ss.child("images").val();
         const commentKeysObj  = ss.child("comments").val();
 
-        if( imgKeysObj ) {
+/*        if( imgKeysObj ) {
           dispatch({
             type: actionType.COUNT_IMAGE,
             imgCount: Object.keys(imgKeysObj).length
           });
-        }
+        }*/
 
         if( commentKeysObj ){
           dispatch({
@@ -235,6 +584,23 @@ export function postUserListener(){
       })
   }
 }
+export function updateUsersListener(){
+  console.log( "updateUsersListener" );
+
+  return function(dispatch){
+    firebase.database().ref("users")
+      .on("child_changed", (ss) => {
+
+/*          dispatch({
+            type: actionType.COUNT_IMAGE,
+            imgCount: 1
+          });*/
+
+
+      })
+  }
+}
+
 
 
 /*export function getAllImages() {

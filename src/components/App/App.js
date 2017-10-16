@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/actions';
 import { bindActionCreators } from 'redux';
 
-import firebase from "../../firebase"
-
 import Navbar from "../Navbar/Navbar";
 import Header from "../Header/Header";
 import Images from "../Images/Images";
@@ -36,27 +34,27 @@ class App extends Component {
     // listen for POST "added" in FB collection
     this.props.actions.postImagesListener();
     this.props.actions.postUserListener();
+    // this.props.actions.postCommentsListener();
 
     // listen for DELETE "removed" in FB collection
     this.props.actions.deleteImageListener();
+    this.props.actions.removeCommentsListener();
+
+    // listen for PUT/PATCH "update" in FB collection
+    this.props.actions.updateImagesListener();
+    this.props.actions.updateUsersListener();
+    this.props.actions.updateCommentsListener();
   }
 
   update_image_modal = (image_modal) => {
     this.setState({ image_modal })
   };
 
-
-
-
-  signOut = () => {
-    firebase.auth().signOut();
-  };
-
   render() {
 
     return (
       <div className="App">
-        <Navbar signOut={this.signOut} />
+        <Navbar />
         <Error errors={this.props.errors} updateError={this.props.actions.updateError} />
         <Header counters={this.props.counters} />
 
@@ -65,7 +63,9 @@ class App extends Component {
 
         <Modal>
           <ModalLogin />
-          <ModalImage image_modal={this.state.image_modal} />
+          <ModalImage
+            image_modal={this.state.image_modal}
+          />
         </Modal>
 
         {this.state.dev_flag &&

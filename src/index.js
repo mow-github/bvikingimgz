@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import App from './components/App/App';
 import FormRegister from './components/Form/FormRegister';
+import User from './components/User/User';
 
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
@@ -21,6 +22,7 @@ ReactDOM.render(
       <Switch>
         <Route path="/" component={App} exact/>
         <Route path="/register" component={FormRegister} exact />
+        <Route path="/user" component={User} exact />
       </Switch>
     </BrowserRouter>
   </Provider>,

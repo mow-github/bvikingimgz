@@ -28,6 +28,20 @@ class Images extends Component{
 
   };
 
+  incrementLike = (imageObj) => {
+    console.log("increment",imageObj);
+    this.props.actions.updateImageThumbUp(imageObj);
+  };
+
+  decrementLike = (imageObj) => {
+    console.log("decrement",imageObj);
+  };
+
+  removeImage = (imageObj) => {
+    console.log("removeImage",imageObj);
+    this.props.actions.removeImage(imageObj, this.props.users.role);
+  };
+
   render(){
 
     let images = this.props.images;
@@ -36,7 +50,12 @@ class Images extends Component{
     }
 
     const imagesMapped = Object.keys(images).map((image) => {
-      return <Image key={image} id={image} {...images[image]} update_image_modal={this.props.update_image_modal} />
+      return <Image key={image} id={image} {...images[image]}
+                    update_image_modal={this.props.update_image_modal}
+                    incrementLike={this.incrementLike}
+                    decrementLike={this.decrementLike}
+                    removeImage={this.removeImage}
+      />
     });
 
     return (

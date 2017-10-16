@@ -25,3 +25,56 @@ a:hover{
   font-family: "Arial";
   font-size: 0.5rem;
 }
+
+.imageBtns, .imageNoHoverBtns{
+  opacity: 0.5;
+  padding: 0.7rem;
+  border-radius: 1rem;
+}
+.imageBtns:hover{
+  opacity: 1;
+  cursor: pointer;
+}
+
+.commentParent{
+  /*background-color: red;*/
+  height: 10rem;
+  overflow-y: scroll;
+  font-size: small;
+
+}
+
+.commentTimestamp::after{
+  content: " - ";
+}
+.commentAuthor{
+  font-weight: bold;
+}
+.commentAuthor::after{
+  content: ": ";
+}
+
+.commentText{
+  font-style: italic;
+  display: block;
+}
+.removeImageBtn{
+  position: absolute;
+}
+.removeCommentBtn,
+.removeImageBtn{
+  opacity: 0.5;
+  top:0;
+  right: 2rem;
+}
+.removeCommentBtn:hover,
+.removeImageBtn:hover{
+  opacity: 1;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.updateCommentInput{
+  text-decoration: underline;
+  font-size: inherit;
+  border: none;
+}

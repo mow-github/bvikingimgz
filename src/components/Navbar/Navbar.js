@@ -6,8 +6,13 @@ import { bindActionCreators } from 'redux';
 
 import Bvkingimgz from "../Header/Bvkingimgz"
 import { Link } from 'react-router-dom'
+import firebase from "../../firebase"
 
 class Navbar extends Component{
+
+  signOut = () => {
+    firebase.auth().signOut();
+  };
 
   render(){
     return (
@@ -33,7 +38,7 @@ class Navbar extends Component{
             <div className="navbar-nav ml-auto">
               {!this.props.users && <Link className="nav-item nav-link ml-5" to="/register">Register</Link> }
               {!this.props.users && <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#modalLogin">login modal</button>}
-              {this.props.users && <button className="btn btn-danger" onClick={this.props.signOut}>signOut - { this.props.users.email }</button> }
+              {this.props.users && <button className="btn btn-danger" onClick={this.signOut}>signOut - { this.props.users.email }</button> }
             </div>
           </div>
 
