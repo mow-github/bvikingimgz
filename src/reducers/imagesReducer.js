@@ -10,7 +10,7 @@ export default function errors(state = initialState.images, action) {
       return state.filter(image => image.imgid !== action.imgid);
     case actionType.GET_ALL_IMAGES:
       return action.images || [];
-    case actionType.PATCH_IMAGE:
+/*    case actionType.PATCH_IMAGE:
 
       state.filter(image => {
         if(image.imgid === action.image.imgid){
@@ -21,7 +21,7 @@ export default function errors(state = initialState.images, action) {
         return image;
       });
 
-      return [...state];
+      return [...state];*/
     case actionType.PATCH_IMAGE_POST_COMMENT_INDEX:
 
       state.filter(image => {
@@ -29,6 +29,49 @@ export default function errors(state = initialState.images, action) {
           console.log("..",image);
 
           image.comments = {...image.comments,  [action.comment.cid]:{ [action.comment.cid]: true } };
+        }
+        return image;
+      });
+
+      return [...state];
+    case actionType.PATCH_IMAGE_POST_VOTE_INDEX:
+
+      state.filter(image => {
+        if(image.imgid === action.vote.imgid){
+          console.log("..",image);
+
+          image.votes = {...image.votes,  [action.vote.vid]:{ [action.vote.vid]: true } };
+        }
+        return image;
+      });
+
+      return [...state];
+
+    case actionType.PATCH_IMAGE_THUMB_UP_1:
+
+      state.filter(image => {
+        if(image.imgid === action.imgid){
+          image.thumbs_up_tot += 1;
+        }
+        return image;
+      });
+
+      return [...state];
+    case actionType.PATCH_IMAGE_THUMB_DOWN_1:
+
+      state.filter(image => {
+        if(image.imgid === action.imgid){
+          image.thumbs_down_tot += 1;
+        }
+        return image;
+      });
+
+      return [...state];
+    case actionType.PATCH_IMAGE_COMMENT_UP_1:
+
+      state.filter(image => {
+        if(image.imgid === action.imgid){
+          image.comments_tot += 1;
         }
         return image;
       });

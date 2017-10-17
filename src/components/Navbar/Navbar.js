@@ -30,9 +30,11 @@ class Navbar extends Component{
               <Link className="nav-item nav-link ml-5" to="/">Bvikingimgz</Link>
 
               <form className="form-inline hidden-sm-down">
-                <input className="form-control" type="text" placeholder="Filter imgz" />
+                <input className="form-control" type="text" placeholder="Filter imgz"  disabled />
                 <div className="input-group-addon" ><span className="fa fa-search"></span></div>
               </form>
+
+              <Link className="nav-item nav-link ml-5" to="/user">UserPage</Link>
 
             </div>
             <div className="navbar-nav ml-auto">

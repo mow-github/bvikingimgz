@@ -28,13 +28,14 @@ class Images extends Component{
 
   };
 
-  incrementLike = (imageObj) => {
-    console.log("increment",imageObj);
-    this.props.actions.updateImageThumbUp(imageObj);
+  incrementLike = (voteObj) => {
+    console.log("increment",voteObj);
+    this.props.actions.postVote(voteObj);
   };
 
-  decrementLike = (imageObj) => {
-    console.log("decrement",imageObj);
+  decrementLike = (voteObj) => {
+    console.log("decrement",voteObj);
+    this.props.actions.postVote(voteObj);
   };
 
   removeImage = (imageObj) => {
@@ -42,8 +43,10 @@ class Images extends Component{
     this.props.actions.removeImage(imageObj, this.props.users.role);
   };
 
-  render(){
 
+
+
+  render(){
     let images = this.props.images;
     if( this.state.userImages && this.state.userImagesFlag ){
       images = this.state.userImages;
@@ -58,31 +61,37 @@ class Images extends Component{
       />
     });
 
+    const btns =         <div>
+      <button className="btn" onClick={this.toggle}>Toggle all vs user imgz</button>
+      <br/>
+      <button className="btn btn-warning" onClick={() => {
+
+        const imgLength       = this.props.images.length,
+          src             = `https://picsum.photos/200/200?random=${imgLength}`,
+          title           = faker.lorem.words(),
+          alt             = `img${imgLength}`,
+          thumbs_up_tot   = 0, // faker.random.number(100),
+          thumbs_down_tot = 0, // faker.random.number(100),
+          comments_tot    = 0; // faker.random.number(100);
+
+        const imageObj = {
+          src,
+          alt,
+          title,
+          thumbs_up_tot,
+          thumbs_down_tot,
+          comments_tot,
+        };
+
+        this.props.actions.postImages(imageObj)
+      }}>Add your random pic</button><br/>
+    </div>;
+
+
     return (
       <div className="container">
 
-        <button className="btn" onClick={this.toggle}>Toggle all vs user imgz</button>
-        <button className="btn btn-warning" onClick={() => {
-
-          const imgLength       = this.props.images.length,
-            src             = `https://picsum.photos/200/200?random=${imgLength}`,
-            title           = faker.lorem.words(),
-            alt             = `img${imgLength}`,
-            thumbs_up_tot   = faker.random.number(100),
-            thumbs_down_tot = faker.random.number(100),
-            comments_tot    = faker.random.number(100);
-
-          const imageObj = {
-            src,
-            alt,
-            title,
-            thumbs_up_tot,
-            thumbs_down_tot,
-            comments_tot,
-          };
-
-          this.props.actions.postImages(imageObj)
-        }}>Add your random pic</button><br/>
+        {this.props.users.email && btns}
 
         <div className="row">
           {imagesMapped}

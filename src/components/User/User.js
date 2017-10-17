@@ -6,15 +6,16 @@ import { bindActionCreators } from 'redux';
 
 import Navbar from "../Navbar/Navbar";
 
+// import { Redirect } from 'react-router-dom';
+
 class User extends Component{
 
   render(){
 
-    console.log( this.props.users );
-
     return (
       <div>
         <Navbar />
+
       </div>
     );
   }

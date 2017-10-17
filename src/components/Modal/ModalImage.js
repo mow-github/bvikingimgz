@@ -28,6 +28,8 @@ class ModalImage extends Component {
 
   render() {
 
+
+
     const {
       src,
       title,

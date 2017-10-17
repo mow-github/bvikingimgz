@@ -14,8 +14,6 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Store from './store';
 const store = Store();
 
-
-
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

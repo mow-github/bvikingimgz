@@ -1,10 +1,6 @@
 import * as actionType from './actionTypes';
 import firebase from '../firebase';
 
-
-
-
-
 export function userChanged(){
   return function(dispatch){
 
@@ -20,33 +16,6 @@ export function userChanged(){
           return user.val().images;
         }).then((imagesIndexObj) => {
 
-/*          if(imagesIndexObj){
-
-            const imagesIndexArr = Object.keys(imagesIndexObj);
-            let imagesArray = [];
-            imagesIndexArr.forEach((imgid) => {
-              firebase.database().ref(`images/${imgid}`).once("value").then((userImg) => {
-
-                const image = {...userImg.val(), imgid: userImg.key};
-                imagesArray.push(image);
-
-                dispatch({
-                  type: actionType.POST_USER_IMAGE,
-                  image
-                });
-
-              })
-            });
-
-/!*            dispatch({
-              type: actionType.POST_USER_IMAGE,
-              image: imagesArray
-            });*!/
-
-
-          }*/
-
-
         })
       }else{
         dispatch({ type: actionType.SIGN_OUT, user: "" });
@@ -55,86 +24,8 @@ export function userChanged(){
   }
 }
 
-export function redirectAcessDenied(redirectMsg) {
-  return function(dispatch) {
-    dispatch({
-      type: 'REDIRECT_ACCESS_DENIED',
-      redirectMsg
-    });
-  }
-}
 
 
-export function removeAllUsers() {
-  return function(dispatch){
-
-    firebase.database().ref(`users`).remove().then(() => {
-      console.log("removeAllUsers from FB");
-    }).catch((error) => {
-      dispatch({type: "FETCH_ERROR", error})
-    });
-  };
-}
-
-export function removeLoggedinUserFB() {
-  return function(dispatch){
-
-    try{
-
-      const uid = firebase.auth().currentUser.uid;
-
-      firebase.auth().currentUser.delete().then(() => {
-        firebase.database().ref(`users/${uid}`).remove();
-      }).then(() => {
-        console.log("remove Loggedin User FB + user FB row");
-      }).catch((error) => {
-        dispatch({type: "FETCH_ERROR", error})
-      });
-
-    }catch(error){ dispatch({type: "FETCH_ERROR", error}) }
-
-  };
-
-}
-
-
-export function updateError() {
-  return function(dispatch){
-    dispatch({type: "UPDATE_ERROR", error: ""})
-  };
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export function updateImageThumbUp(imageObj) {
-
-  return function(dispatch){
-
-
-    try{
-      const uid = firebase.auth().currentUser.uid;
-      console.log(uid);
-      console.log("FIX this.. vote and text CONNECTED to a user");
-
-    }catch(error){ dispatch({type: "FETCH_ERROR", error}) }
-
-
-
-  };
-
-}
 
 // ------------------------------------- IMAGES -----------------------------------------
 export function postImages(imageObj) {
@@ -190,14 +81,21 @@ export function removeImage(image, currentUserRole){
       }
 
       if(flag) {
-        console.log("FlAG TRUE");
-        console.log(image);
+        console.log("FlAG TRUE",image);
 
         if(image.comments){
           const commentsArray = Object.keys(image.comments);
           commentsArray.forEach((cid) => {
             firebase.database().ref(`comments/${cid}`).remove();
             firebase.database().ref(`users/${image.uid}/comments/${cid}`).remove();
+          });
+        }
+
+        if(image.votes){
+          const votesArray = Object.keys(image.votes);
+          votesArray.forEach((vid) => {
+            firebase.database().ref(`votes/${vid}`).remove();
+            firebase.database().ref(`users/${image.uid}/votes/${vid}`).remove();
           });
         }
 
@@ -212,6 +110,9 @@ export function removeImage(image, currentUserRole){
 
       }
 
+    }else{
+      const msg = "You are not logged in.. unable to exec. your request";
+      dispatch({type: "FETCH_ERROR", error:{message: msg} })
     }
 
   };
@@ -416,6 +317,96 @@ export function updateComment(comment, currentUserRole) {
 }
 // ------------------------------------- COMMENT -----------------------------------------
 
+// ------------------------------------- USER -----------------------------------------
+export function removeAllUsers() {
+  return function(dispatch){
+
+    firebase.database().ref(`users`).remove().then(() => {
+      console.log("removeAllUsers from FB");
+    }).catch((error) => {
+      dispatch({type: "FETCH_ERROR", error})
+    });
+  };
+}
+export function removeLoggedinUserFB() {
+  return function(dispatch){
+
+    try{
+
+      const uid = firebase.auth().currentUser.uid;
+
+      firebase.auth().currentUser.delete().then(() => {
+        firebase.database().ref(`users/${uid}`).remove();
+      }).then(() => {
+        console.log("remove Loggedin User FB + user FB row");
+      }).catch((error) => {
+        dispatch({type: "FETCH_ERROR", error})
+      });
+
+    }catch(error){ dispatch({type: "FETCH_ERROR", error}) }
+
+  };
+
+}
+// ------------------------------------- USER -----------------------------------------
+
+
+// ------------------------------------- VOTES -----------------------------------------
+/*export function updateImageThumbUp(imageObj) {
+
+  return function(dispatch){
+
+
+    try{
+      const uid = firebase.auth().currentUser.uid;
+      console.log(uid);
+      console.log("FIX this.. vote and text CONNECTED to a user");
+
+    }catch(error){ dispatch({type: "FETCH_ERROR", error}) }
+
+
+
+  };
+
+}*/
+export function postVote(voteObj) {
+
+  return function(dispatch){
+
+    try{
+
+      const {uid} = firebase.auth().currentUser;
+      voteObj.uid = uid;
+      console.log("---", voteObj);
+
+      firebase.database().ref("votes").push(voteObj).then((vote) => {
+        const voteObjUpd = {...voteObj, vid: vote.key};
+        console.log( ",", voteObjUpd );
+
+        // dispatch({ type: actionType.POST_VOTE, vote: voteObjUpd });
+        dispatch({
+          type: actionType.PATCH_IMAGE_POST_VOTE_INDEX,
+          vote: voteObjUpd
+        });
+
+        return vote.key;
+      }).then((vid) => {
+        firebase.database().ref(`users/${uid}/votes/${vid}`).set({[vid]: true});
+        firebase.database().ref(`images/${voteObj.imgid}/votes/${vid}`).set({[vid]: true})
+      }).catch(error =>dispatch({type: "FETCH_ERROR", error}))
+
+    }catch(error){ dispatch({type: "FETCH_ERROR", error}) }
+
+  };
+
+}
+// ------------------------------------- VOTES -----------------------------------------
+
+
+
+
+
+
 // ------------------------------------- LISTENER IMAGES -----------------------------------------
 export function postImagesListener(){
   console.log( "postImagesListener" );
@@ -424,6 +415,10 @@ export function postImagesListener(){
     firebase.database().ref("images")
       .on("child_added", (ss) => {
         const image = {...ss.val(), imgid: ss.key};
+
+
+        // console.log("child_added", image);
+
         dispatch({
           type: actionType.POST_IMAGE,
           image: image
@@ -441,6 +436,44 @@ export function postImagesListener(){
             imgid: image.imgid
           });
         }
+
+        /*      MOVED TO LISTENER - postComments
+
+                if(image.comments){
+                  const commentsArray = Object.keys(image.comments);
+                  commentsArray.forEach((cid) => {
+                    firebase.database().ref(`comments/${cid}`).on("value", (ss) => {
+                    console.log("increment comments 1");
+                      dispatch({
+                        type: actionType.PATCH_IMAGE_COMMENT_UP_1,
+                        imgid: image.imgid
+                      });
+                    });
+                  });
+                }*/
+        /*      MOVED TO LISTENER - postVotes
+
+                if(image.votes){
+                  const votesArray = Object.keys(image.votes);
+                  votesArray.forEach((vid) => {
+                    firebase.database().ref(`votes/${vid}`).on("value", (ss) => {
+                      const value = ss.val().value;
+                      if(value === 1){
+                        console.log( "thumbs_up_tot: +1" );
+                        dispatch({
+                          type: actionType.PATCH_IMAGE_THUMB_UP_1,
+                          imgid: image.imgid
+                        });
+                      }else if(value === -1){
+                        console.log( "thumbs_down_tot: +1" );
+                        dispatch({
+                          type: actionType.PATCH_IMAGE_THUMB_DOWN_1,
+                          imgid: image.imgid
+                        });
+                      }
+                    });
+                  });
+                }*/
 
       })
   }
@@ -487,10 +520,8 @@ export function updateImagesListener(){
       .on("child_changed", (ss) => {
         const image = {...ss.val(), imgid: ss.key};
 
-        dispatch({
-          type: actionType.PATCH_IMAGE,
-          image: image
-        });
+        console.log( "child_changed -- updateImagesListener ", image);
+
 
       })
   }
@@ -498,7 +529,7 @@ export function updateImagesListener(){
 // ------------------------------------- LISTENER IMAGES -----------------------------------------
 
 // ------------------------------------- LISTENER COMMENTS -----------------------------------------
-/*export function postCommentsListener(){
+export function postCommentsListener(){
   console.log( "postCommentsListener" );
 
   return function(dispatch){
@@ -506,17 +537,25 @@ export function updateImagesListener(){
       .on("child_added", (ss) => {
 
         const comment = {...ss.val(), cid: ss.key};
-/!*        dispatch({
-          type: actionType.POST_IMAGE,
-          image: image
-        });*!/
 
-        console.log( comment );
+
+        // console.log("child_added -- comment -- ", comment);
+
+        dispatch({
+          type: actionType.PATCH_IMAGE_COMMENT_UP_1,
+          imgid: comment.imgid
+        });
+
+        dispatch({
+          type: actionType.COUNT_COMMENT,
+          commentCount: 1
+        });
+
 
 
       })
   }
-}*/
+}
 export function removeCommentsListener(){
   console.log( "removeCommentsListener" );
 
@@ -528,6 +567,11 @@ export function removeCommentsListener(){
           type: actionType.REMOVE_COMMENT,
           cid
         });
+
+      dispatch({
+        type: actionType.COUNT_COMMENT,
+        commentCount: -1
+      });
 
       })
   }
@@ -558,23 +602,6 @@ export function postUserListener(){
     firebase.database().ref("users")
       .on("child_added", (ss) => {
 
-        // const imgKeysObj      = ss.child("images").val();
-        const commentKeysObj  = ss.child("comments").val();
-
-/*        if( imgKeysObj ) {
-          dispatch({
-            type: actionType.COUNT_IMAGE,
-            imgCount: Object.keys(imgKeysObj).length
-          });
-        }*/
-
-        if( commentKeysObj ){
-          dispatch({
-            type: actionType.COUNT_COMMENT,
-            commentCount: Object.keys( commentKeysObj ).length
-          });
-        }
-
         dispatch({
           type: actionType.COUNT_USER,
           userCount: 1
@@ -600,7 +627,63 @@ export function updateUsersListener(){
       })
   }
 }
+// ------------------------------------- LISTENER USER -----------------------------------------
 
+// ------------------------------------- LISTENER VOTES -----------------------------------------
+export function postVotesListener(){
+
+  return function(dispatch){
+    firebase.database().ref("votes")
+      .on("child_added", (ss) => {
+
+        const vote = {...ss.val(), vid: ss.key};
+
+        // console.log("child_added -- vote listener", vote);
+        if(vote.value === 1){
+          dispatch({
+            type: actionType.PATCH_IMAGE_THUMB_UP_1,
+            imgid: vote.imgid
+          });
+        }else if(vote.value === -1){
+          dispatch({
+            type: actionType.PATCH_IMAGE_THUMB_DOWN_1,
+            imgid: vote.imgid
+          });
+        }
+
+
+      })
+  }
+}
+export function removeVotesListener(){
+
+  return function(dispatch){
+    firebase.database().ref("votes")
+      .on("child_removed", (ss) => {
+
+        const vote = {...ss.val(), vid: ss.key};
+        console.log( vote );
+        console.log("------------------------VOTES REMOVED - not active in app.js yet");
+
+
+      })
+  }
+}
+// ------------------------------------- LISTENER VOTES -----------------------------------------
+
+export function redirectAcessDenied(redirectMsg) {
+  return function(dispatch) {
+    dispatch({
+      type: 'REDIRECT_ACCESS_DENIED',
+      redirectMsg
+    });
+  }
+}
+export function updateError() {
+  return function(dispatch){
+    dispatch({type: "UPDATE_ERROR", error: ""})
+  };
+}
 
 
 /*export function getAllImages() {

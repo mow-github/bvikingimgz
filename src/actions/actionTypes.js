@@ -20,6 +20,10 @@ export const REMOVE_USER_IMAGE_INDEX        = 'REMOVE_USER_IMAGE_INDEX';
 export const REMOVE_IMAGE                   = 'REMOVE_IMAGE';
 export const PATCH_IMAGE                    = 'PATCH_IMAGE';
 export const PATCH_IMAGE_POST_COMMENT_INDEX = 'PATCH_IMAGE_POST_COMMENT_INDEX';
+export const PATCH_IMAGE_POST_VOTE_INDEX    = 'PATCH_IMAGE_POST_VOTE_INDEX';
+export const PATCH_IMAGE_THUMB_UP_1         = 'PATCH_IMAGE_THUMB_UP_1';
+export const PATCH_IMAGE_THUMB_DOWN_1       = 'PATCH_IMAGE_THUMB_DOWN_1';
+export const PATCH_IMAGE_COMMENT_UP_1       = 'PATCH_IMAGE_COMMENT_UP_1';
 
 export const COUNT_IMAGE                    = 'COUNT_IMAGE';
 export const COUNT_USER                     = 'COUNT_USER';

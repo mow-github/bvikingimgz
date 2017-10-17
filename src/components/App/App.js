@@ -19,7 +19,7 @@ class App extends Component {
 
   state = {
 
-    dev_flag: true,
+    dev_flag: false,
 
     image_modal:{
       // update_image_modal fn updates data here
@@ -34,7 +34,8 @@ class App extends Component {
     // listen for POST "added" in FB collection
     this.props.actions.postImagesListener();
     this.props.actions.postUserListener();
-    // this.props.actions.postCommentsListener();
+    this.props.actions.postCommentsListener();
+    this.props.actions.postVotesListener();
 
     // listen for DELETE "removed" in FB collection
     this.props.actions.deleteImageListener();
@@ -58,7 +59,6 @@ class App extends Component {
         <Error errors={this.props.errors} updateError={this.props.actions.updateError} />
         <Header counters={this.props.counters} />
 
-
         <Images update_image_modal={this.update_image_modal} />
 
         <Modal>
@@ -68,17 +68,15 @@ class App extends Component {
           />
         </Modal>
 
+
+
+
         {this.state.dev_flag &&
         <div>
           <h4>dev buttons</h4>
           <button className="btn btn-warning" onClick={this.props.actions.removeAllUsers}>Remove * FB users (not auth DB)</button><br/>
           <button className="btn btn-warning" onClick={this.props.actions.removeLoggedinUserFB}>Remove 1x logged in FB user (both places)</button><br/><br/>
-
-
           <button className="btn btn-warning" onClick={this.props.actions.removeAllImages}>Remove * FB images</button><br/>
-
-
-
         </div>
         }
 
