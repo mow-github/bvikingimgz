@@ -20,6 +20,8 @@ export default function comments(state = initialState.comments, action) {
       });
 
       return [...state];
+    case actionType.RESET_COMMENT:
+      return action.comment;
     default:
       return state;
   }

@@ -17,7 +17,7 @@ class Navbar extends Component{
   render(){
     return (
       <div className="container">
-        <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
+        <nav className="navbar navbar-toggleable-md navbar-light">
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -30,8 +30,8 @@ class Navbar extends Component{
               <Link className="nav-item nav-link ml-5" to="/">Bvikingimgz</Link>
 
               <form className="form-inline hidden-sm-down">
-                <input className="form-control" type="text" placeholder="Filter imgz"  disabled />
-                <div className="input-group-addon" ><span className="fa fa-search"></span></div>
+                <input className="form-control" type="text" placeholder="Filter imgz"  disabled style={searchInput}/>
+                <div style={searchBnContainer}><span className="fa fa-search" style={searchBnChild}></span></div>
               </form>
 
               <Link className="nav-item nav-link ml-5" to="/user">UserPage</Link>
@@ -39,7 +39,7 @@ class Navbar extends Component{
             </div>
             <div className="navbar-nav ml-auto">
               {!this.props.users && <Link className="nav-item nav-link ml-5" to="/register">Register</Link> }
-              {!this.props.users && <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#modalLogin">login modal</button>}
+              {!this.props.users && <button type="button" className="btn btn-primary" onClick={() => this.props.showModalLogin(true)}>login modal</button>}
               {this.props.users && <button className="btn btn-danger" onClick={this.signOut}>signOut - { this.props.users.email }</button> }
             </div>
           </div>
@@ -65,3 +65,10 @@ function mapDispatchToProps(dispatch) {
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
+
+
+const searchBnContainer = { position: "relative" };
+const searchBnChild     = { position: "absolute", right: "1rem", top: "-8px" };
+const searchInput       = { backgroundColor: "transparent", fontStyle: "italic" };
+
+// data-toggle="modal" data-target="#modalLogin"

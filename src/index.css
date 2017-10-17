@@ -78,3 +78,8 @@ a:hover{
   font-size: inherit;
   border: none;
 }
+
+/* change display none to inherit.. so we can toggle modal with react state  */
+.modal{
+  display: block;
+}

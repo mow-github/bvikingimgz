@@ -13,18 +13,16 @@ class Image extends Component{
       thumbs_up_tot,
       thumbs_down_tot,
       comments_tot,
-      imgid
+      imgid,
     };
 
-    this.props.update_image_modal(Image);
+    this.props.update_image_modal(Image,true);
   };
-
 
   render(){
 
     const { thumbs_up_tot, thumbs_down_tot, comments_tot, uid, imgid, comments, votes } = this.props;
     const removeObj = {uid, imgid, thumbs_up_tot, thumbs_down_tot, comments, votes};
-
 
     return (
      [
@@ -35,7 +33,7 @@ class Image extends Component{
           <span className="fa fa-thumbs-o-up fa-lg col-4 imageBtns" aria-hidden="true"  onClick={() => { this.props.incrementLike({imgid, value: 1}); }}> { thumbs_up_tot }</span>
           <span className="fa fa-thumbs-o-down fa-lg col-4 imageBtns" aria-hidden="true"  onClick={() => { this.props.decrementLike({imgid, value: -1}); }}> { thumbs_down_tot }</span>
         </figcaption>
-        <button type="button" className="btn col-12" data-toggle="modal" data-target="#modalImage" onClick={this.update_image_modal}>View img and comments</button>
+        <button type="button" className="btn col-12"  onClick={this.update_image_modal}>View img and comments</button>
         <span className="fa fa-trash-o fa-lg removeImageBtn" onClick={() => this.props.removeImage(removeObj) } ></span>
       </figure>
       ]
@@ -46,3 +44,5 @@ class Image extends Component{
 }
 
 export default Image;
+
+// data-toggle="modal" data-target="#modalImage"

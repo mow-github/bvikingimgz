@@ -76,6 +76,9 @@ class ModalLogin extends Component {
   };
 
   render() {
+    if(!this.props.showModalLogin || this.props.users) {
+      return null;
+    }
 
 
     const {
@@ -84,12 +87,12 @@ class ModalLogin extends Component {
     } = this.state;
 
     return (
-      <div className="modal fade" id="modalLogin">
+      <div className="modal" id="modalLogin">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">Login</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={()=> this.props.closeModalLogin(false) }>
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>

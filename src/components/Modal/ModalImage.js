@@ -9,7 +9,10 @@ class ModalImage extends Component {
   state = {
     toggleUpdateInput: false,
     postComment: "hii",
-    timestampRaw: null
+    timestampRaw: null,
+
+    commentsMapped: [],
+
   };
 
   postComment = (e) => {
@@ -28,6 +31,14 @@ class ModalImage extends Component {
 
   render() {
 
+    if(!this.props.showModalImage) {
+
+      if(this.props.comments.length > 0){
+        console.log("reset comments array.. must click open comments btn again");
+        this.props.actions.resetComments();
+      }
+      return null;
+    }
 
 
     const {
@@ -71,12 +82,12 @@ class ModalImage extends Component {
     });
 
     return (
-      <div className="modal fade" id="modalImage">
+      <div className="modal" id="modalImage">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">{title}</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={()=> this.props.closeModalImage(false) }>
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>

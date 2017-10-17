@@ -18,13 +18,10 @@ import Error from "../Error/Error";
 class App extends Component {
 
   state = {
-
     dev_flag: false,
-
-    image_modal:{
-      // update_image_modal fn updates data here
-    },
-
+    image_modal:{ }, // dyn added, from image-component
+    toggleModalImage: false,
+    toggleModalLogin: false
   };
 
 
@@ -45,27 +42,28 @@ class App extends Component {
     this.props.actions.updateImagesListener();
     this.props.actions.updateUsersListener();
     this.props.actions.updateCommentsListener();
+
   }
 
-  update_image_modal = (image_modal) => {
-    this.setState({ image_modal })
-  };
+  update_image_modal = (image_modal, toggleModalImage) => { this.setState({ image_modal, toggleModalImage }) };
+  closeModalImage = (toggleModalImage) => { this.setState({ toggleModalImage }) };
+  closeModalLogin = (toggleModalLogin) => { this.setState({ toggleModalLogin }) };
+  showModalLogin = (toggleModalLogin) => { this.setState({ toggleModalLogin }) };
+
 
   render() {
-
     return (
       <div className="App">
-        <Navbar />
+
+        <Navbar showModalLogin={this.showModalLogin}/>
         <Error errors={this.props.errors} updateError={this.props.actions.updateError} />
         <Header counters={this.props.counters} />
 
         <Images update_image_modal={this.update_image_modal} />
 
         <Modal>
-          <ModalLogin />
-          <ModalImage
-            image_modal={this.state.image_modal}
-          />
+          <ModalLogin showModalLogin={this.state.toggleModalLogin} closeModalLogin={this.closeModalLogin}/>
+          <ModalImage image_modal={this.state.image_modal} showModalImage={this.state.toggleModalImage} closeModalImage={this.closeModalImage} />
         </Modal>
 
 

@@ -132,8 +132,15 @@ export function removeAllImages(){
 // ------------------------------------- IMAGES -----------------------------------------
 
 // ------------------------------------- COMMENT -----------------------------------------
+export function resetComments(imgid) {
+  return function(dispatch){
+      dispatch({
+        type: actionType.RESET_COMMENT,
+        comment: []
+      });
+    }
+}
 export function getComments(imgid) {
-
   return function(dispatch){
 
     if(firebase.auth().currentUser){
@@ -172,7 +179,7 @@ export function getComments(imgid) {
       const msg = "You are not logged in.. unable to fetch comments";
       console.log(msg);
       // hmm, unable to exec due to rendering component ?
-      // dispatch({type: "FETCH_ERROR", error:{message: msg} })
+      dispatch({type: "FETCH_ERROR", error:{message: msg} })
     }
 
   };

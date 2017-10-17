@@ -33,3 +33,4 @@ export const POST_COMMENT                   = 'POST_COMMENT';
 export const GET_COMMENT_ALL                = 'GET_COMMENT_ALL';
 export const REMOVE_COMMENT                 = 'REMOVE_COMMENT';
 export const PATCH_COMMENT                  = 'PATCH_COMMENT';
+export const RESET_COMMENT                  = 'RESET_COMMENT';
