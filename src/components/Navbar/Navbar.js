@@ -6,13 +6,11 @@ import { bindActionCreators } from 'redux';
 
 import Bvkingimgz from "../Header/Bvkingimgz"
 import { Link } from 'react-router-dom'
-import firebase from "../../firebase"
+// import firebase from "../../firebase"
 
 class Navbar extends Component{
 
-  signOut = () => {
-    firebase.auth().signOut();
-  };
+
 
   render(){
     return (
@@ -30,7 +28,7 @@ class Navbar extends Component{
               <Link className="nav-item nav-link ml-5" to="/">Bvikingimgz</Link>
 
               <form className="form-inline hidden-sm-down">
-                <input className="form-control" type="text" placeholder="Filter imgz"  disabled style={searchInput}/>
+                <input className="form-control" type="text" placeholder="Filter imgz"  title="not active yet" disabled style={searchInput}/>
                 <div style={searchBnContainer}><span className="fa fa-search" style={searchBnChild}></span></div>
               </form>
 
@@ -38,9 +36,9 @@ class Navbar extends Component{
 
             </div>
             <div className="navbar-nav ml-auto">
-              {!this.props.users && <Link className="nav-item nav-link ml-5" to="/register">Register</Link> }
+              {/*{!this.props.users && <Link className="nav-item nav-link ml-5" to="/register">Register</Link> }*/}
               {!this.props.users && <button type="button" className="btn btn-primary" onClick={() => this.props.showModalLogin(true)}>login modal</button>}
-              {this.props.users && <button className="btn btn-danger" onClick={this.signOut}>signOut - { this.props.users.email }</button> }
+              {this.props.users && <button className="btn btn-danger" onClick={this.props.signOut}>signOut - { this.props.users.email }</button> }
             </div>
           </div>
 

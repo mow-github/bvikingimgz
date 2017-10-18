@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import * as actions from '../../actions/actions';
@@ -132,10 +132,8 @@ class FormRegister extends Component{
   render(){
 
     if (this.state.redirect || this.props.users) {
-      // redirect user to "/" IF user exist aka. logged in
-      // gives warning error.. why
       // this.props.actions.redirectAcessDenied("You don't have access to this path if you are logged in");
-      return <Redirect to='/'/>;
+      // return <Redirect to='/'/>;
     }
 
     const {

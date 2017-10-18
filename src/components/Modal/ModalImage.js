@@ -9,7 +9,7 @@ class ModalImage extends Component {
   state = {
     toggleUpdateInput: false,
     postComment: "hii",
-    timestampRaw: null,
+    //timestampRaw: new Date(),
 
     commentsMapped: [],
 
@@ -20,7 +20,7 @@ class ModalImage extends Component {
     console.log("form submitted");
 
     const text = this.state.postComment;
-    const timestampRaw = this.state.timestampRaw;
+    const timestampRaw = new Date();//this.state.timestampRaw;
     const imgid = this.props.image_modal.imgid;
 
     const commentObj = { timestampRaw, text, imgid };
@@ -28,6 +28,11 @@ class ModalImage extends Component {
 
     this.props.actions.postComment(commentObj);
   };
+
+  componentDidMount(){
+/*    this.props.actions.getComments(this.props.image_modal.imgid)
+    console.log(1);*/
+  }
 
   render() {
 
@@ -104,7 +109,7 @@ class ModalImage extends Component {
               <div>
                 <form className="row my-4 mx-4" onSubmit={this.postComment}>
                   <input type="text" className="form-control col-12" placeholder="please, leave a comment"  name="postComment" value={this.state.postComment}
-                         onChange={(e) => this.setState({ postComment: e.target.value, timestampRaw: Date.now() }) }/>
+                         onChange={(e) => this.setState({ postComment: e.target.value }) }/>
                   <input className="form-control col-12" type="submit" value="Post a comment" />
                 </form>
                   <button className="btn btn-primary col-12" onClick={() => this.props.actions.getComments(imgid) }>Show all comments</button>

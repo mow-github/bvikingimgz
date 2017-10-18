@@ -15,8 +15,10 @@ import ModalImage from "../Modal/ModalImage";
 import Error from "../Error/Error";
 
 import User from "../User/User";
+import FormRegister from "../Form/FormRegister";
 import Footer from "../Footer/Footer";
 
+import firebase from "../../firebase"
 
 class App extends Component {
 
@@ -30,22 +32,25 @@ class App extends Component {
 
 
   componentDidMount(){
-    this.props.actions.userChanged();
+
+    const {actions} = this.props;
+
+    actions.userChanged();
 
     // listen for POST "added" in FB collection
-    this.props.actions.postImagesListener();
-    this.props.actions.postUserListener();
-    this.props.actions.postCommentsListener();
-    this.props.actions.postVotesListener();
+    actions.postImagesListener();
+    actions.postUserListener();
+    actions.postCommentsListener();
+    actions.postVotesListener();
 
     // listen for DELETE "removed" in FB collection
-    this.props.actions.deleteImageListener();
-    this.props.actions.removeCommentsListener();
+    actions.deleteImageListener();
+    actions.removeCommentsListener();
 
     // listen for PUT/PATCH "update" in FB collection
-    this.props.actions.updateImagesListener();
-    this.props.actions.updateUsersListener();
-    this.props.actions.updateCommentsListener();
+    actions.updateImagesListener();
+    actions.updateUsersListener();
+    actions.updateCommentsListener();
 
   }
 
@@ -54,33 +59,43 @@ class App extends Component {
   closeModalLogin = (toggleModalLogin) => { this.setState({ toggleModalLogin }) };
   showModalLogin = (toggleModalLogin) => { this.setState({ toggleModalLogin }) };
 
+  signOut = () => {
+    this.setState({ toggleUser: false });
+    firebase.auth().signOut();
+  };
 
   render() {
+
+    const { users, actions } = this.props;
+    const { toggleUser, toggleModalLogin, image_modal, toggleModalImage, dev_flag } = this.state;
+
     return (
       <div className="App">
 
-        <Navbar showModalLogin={this.showModalLogin}/>
+        <Navbar showModalLogin={this.showModalLogin}  signOut={this.signOut} />
         <Error errors={this.props.errors} updateError={this.props.actions.updateError} />
         <Header counters={this.props.counters} />
 
 
-        {this.props.users.role === "admin" && <button className="btn btn-danger" onClick={() => this.setState({ toggleUser: !this.state.toggleUser }) }>Toggle Admin / Images area</button> }
-        {this.state.toggleUser && <User /> }
-        {!this.state.toggleUser && <Images update_image_modal={this.update_image_modal} /> }
+        {users.role === "admin" && <button className="btn btn-danger" onClick={() => this.setState({ toggleUser: !toggleUser }) }>Toggle Admin / Images area</button> }
+        {toggleUser && <User /> }
+        {!users && <FormRegister /> }
+        {!toggleUser && <Images update_image_modal={this.update_image_modal} /> }
+
 
         <Modal>
-          <ModalLogin showModalLogin={this.state.toggleModalLogin} closeModalLogin={this.closeModalLogin}/>
-          <ModalImage image_modal={this.state.image_modal} showModalImage={this.state.toggleModalImage} closeModalImage={this.closeModalImage} />
+          <ModalLogin showModalLogin={toggleModalLogin} closeModalLogin={this.closeModalLogin}/>
+          <ModalImage image_modal={image_modal} showModalImage={toggleModalImage} closeModalImage={this.closeModalImage} />
         </Modal>
 
-        <Footer removeLoggedinUserFB={this.props.actions.removeLoggedinUserFB} users={this.props.users}/>
+        <Footer removeLoggedinUserFB={actions.removeLoggedinUserFB} users={users}/>
 
-        {this.state.dev_flag &&
+        {dev_flag &&
         <div>
           <h4>dev buttons</h4>
-          <button className="btn btn-warning" onClick={this.props.actions.removeAllUsers}>Remove * FB users (not auth DB)</button><br/>
-          <button className="btn btn-warning" onClick={this.props.actions.removeLoggedinUserFB}>Remove 1x logged in FB user (both places)</button><br/><br/>
-          <button className="btn btn-warning" onClick={this.props.actions.removeAllImages}>Remove * FB images</button><br/>
+          <button className="btn btn-warning" onClick={actions.removeAllUsers}>Remove * FB users (not auth DB)</button><br/>
+          <button className="btn btn-warning" onClick={actions.removeLoggedinUserFB}>Remove 1x logged in FB user (both places)</button><br/><br/>
+          <button className="btn btn-warning" onClick={actions.removeAllImages}>Remove * FB images</button><br/>
         </div>
         }
 
