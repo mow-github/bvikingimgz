@@ -26,7 +26,7 @@ class Image extends Component{
 
     return (
      [
-      <figure key={this.props.id} className="col-4 my-5 text-center">
+      <figure key={this.props.id} className="col-12 col-md-4 my-5 text-center">
         <img src={this.props.src} alt={this.props.alt} />
         <figcaption className="row my-1">
           <span className="fa fa-comment-o fa-lg col-4 imageNoHoverBtns" aria-hidden="true" > { comments_tot }</span>

@@ -14,6 +14,9 @@ class Images extends Component{
   };
 
   toggle = () => {
+    if(!this.props.users.images){
+      return this.props.actions.setError("Unable to toggle images - no difference from the rest");
+    }
     const imageKeys = Object.keys(this.props.users.images);
     const imagesAll = this.props.images;
 
@@ -62,9 +65,9 @@ class Images extends Component{
     });
 
     const btns =         <div>
-      <button className="btn" onClick={this.toggle}>Toggle all vs user imgz</button>
+      <button className="btn col-12 col-md-4 toggleBtn" onClick={this.toggle}>Toggle all / user imgz</button>
       <br/>
-      <button className="btn btn-warning" onClick={() => {
+      <button className="btn btn-warning col-12 col-md-4 py-5 randomImageBtn" onClick={() => {
 
         const imgLength       = this.props.images.length,
           src             = `https://picsum.photos/200/200?random=${imgLength}`,
@@ -107,6 +110,7 @@ function mapStateToProps(state) {
   return {
      images: state.images,
      users: state.users,
+     errors: state.errors,
   };
 }
 

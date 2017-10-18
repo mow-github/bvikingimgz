@@ -14,6 +14,9 @@ import ModalImage from "../Modal/ModalImage";
 
 import Error from "../Error/Error";
 
+import User from "../User/User";
+import Footer from "../Footer/Footer";
+
 
 class App extends Component {
 
@@ -21,7 +24,8 @@ class App extends Component {
     dev_flag: false,
     image_modal:{ }, // dyn added, from image-component
     toggleModalImage: false,
-    toggleModalLogin: false
+    toggleModalLogin: false,
+    toggleUser: false,
   };
 
 
@@ -59,15 +63,17 @@ class App extends Component {
         <Error errors={this.props.errors} updateError={this.props.actions.updateError} />
         <Header counters={this.props.counters} />
 
-        <Images update_image_modal={this.update_image_modal} />
+
+        {this.props.users.role === "admin" && <button className="btn btn-danger" onClick={() => this.setState({ toggleUser: !this.state.toggleUser }) }>Toggle Admin / Images area</button> }
+        {this.state.toggleUser && <User /> }
+        {!this.state.toggleUser && <Images update_image_modal={this.update_image_modal} /> }
 
         <Modal>
           <ModalLogin showModalLogin={this.state.toggleModalLogin} closeModalLogin={this.closeModalLogin}/>
           <ModalImage image_modal={this.state.image_modal} showModalImage={this.state.toggleModalImage} closeModalImage={this.closeModalImage} />
         </Modal>
 
-
-
+        <Footer removeLoggedinUserFB={this.props.actions.removeLoggedinUserFB} users={this.props.users}/>
 
         {this.state.dev_flag &&
         <div>

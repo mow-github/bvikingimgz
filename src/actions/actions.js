@@ -325,6 +325,52 @@ export function updateComment(comment, currentUserRole) {
 // ------------------------------------- COMMENT -----------------------------------------
 
 // ------------------------------------- USER -----------------------------------------
+export function getAllUsers(){
+  return function(dispatch){
+
+console.log("---getAllUsers");
+    if(firebase.auth().currentUser) {
+
+      // const loggedinUserUid = firebase.auth().currentUser.uid;
+
+      firebase.database().ref(`users`).once("value").then((user) => {
+
+        let usersall = [];
+        user.forEach(function(childUser){
+          const childUserObj = {...childUser.val(), uid: childUser.key};
+          usersall.push(childUserObj);
+        });
+        console.log(usersall);
+        dispatch({ type: actionType.GET_ALL_USERS, usersall });
+      })
+
+    }
+
+  }
+}
+export function updateUserRole(user){
+  return function(dispatch){
+
+console.log("---updateUserRole");
+    if(firebase.auth().currentUser) {
+
+      user.role = user.role === "admin" ? "subscriber" : "admin";
+      let userNoUid = {...user};
+      delete userNoUid.uid;
+
+      firebase.database().ref(`users/${user.uid}`).set(userNoUid).then(() => {
+        console.log("updated user role FB");
+        dispatch({ type: actionType.PATCH_USER_ROLE, user });
+      }).catch((error) => {
+        dispatch({type: "FETCH_ERROR", error})
+      });
+
+
+
+    }
+
+  }
+}
 export function removeAllUsers() {
   return function(dispatch){
 
@@ -689,6 +735,11 @@ export function redirectAcessDenied(redirectMsg) {
 export function updateError() {
   return function(dispatch){
     dispatch({type: "UPDATE_ERROR", error: ""})
+  };
+}
+export function setError(error) {
+  return function(dispatch){
+    dispatch({type: "UPDATE_ERROR", error})
   };
 }
 

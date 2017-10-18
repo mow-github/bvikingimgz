@@ -5,6 +5,7 @@ import errors from './errorsReducer';
 import images from './imagesReducer';
 import counters from './countersReducer';
 import comments from './commentsReducer';
+import usersall from './usersallReducer';
 
 const rootReducer = combineReducers({
   users,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   errors,
   images,
   counters,
-  comments
+  comments,
+  usersall,
 });
 
 export default rootReducer;

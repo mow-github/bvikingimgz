@@ -34,7 +34,7 @@ class Navbar extends Component{
                 <div style={searchBnContainer}><span className="fa fa-search" style={searchBnChild}></span></div>
               </form>
 
-              <Link className="nav-item nav-link ml-5" to="/user">UserPage</Link>
+              {/*<Link className="nav-item nav-link ml-5" to="/user">UserPage</Link>*/}
 
             </div>
             <div className="navbar-nav ml-auto">

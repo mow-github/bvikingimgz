@@ -22,7 +22,28 @@
 
 ###### Instructions:
 1. `npm install / yarn install`
-1. `npm start`
+2. `npm start`
+
+```
+
+-- Quick tutorial: bvikingimgz site - enjoy images --
+
+1. Register with Oauth or with the local form ( note: the redirect to "/" inc redux state.. F5 and reload atm)
+2. Use the login button ( upper right )
+3. Click the orange button to add "random image"
+ - test inc thumbs button beneath every image
+ - test open a image ( click the grey button ) and leave a comment
+4. A comment may be deleted and updated ( use the mini btns next to the comment )
+ - One can also delete the entire image
+
+ - One must be loggedin / owner of the resource OR admin to execute some actions
+
+5. a error component displays msg in the header
+6. Click the admin button to load a list with users --> one can toggle role
+7. Use the "terminate account" in the footer to delete a user in FB
+
+```
+
 
 ###### References:
 * [React-v16.0.html](https://reactjs.org/blog/2017/09/26/react-v16.0.html)
@@ -30,7 +51,6 @@
 * [react-router v4 setup](https://medium.com/@pshrmn/a-simple-react-router-v4-tutorial-7f23ff27adf)
 * [react-router migration to v4](https://github.com/ReactTraining/react-router/blob/25776d4dc89b8fb2f575884749766355992116b5/packages/react-router/docs/guides/migrating.md#the-router)
 * [react-router redirect](https://stackoverflow.com/questions/43230194/how-to-use-redirect-in-the-new-react-router-dom-of-reactjs)
-* [Random Lorem image](https://picsum.photos/)
 
 <hr>
 

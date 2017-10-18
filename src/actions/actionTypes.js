@@ -34,3 +34,6 @@ export const GET_COMMENT_ALL                = 'GET_COMMENT_ALL';
 export const REMOVE_COMMENT                 = 'REMOVE_COMMENT';
 export const PATCH_COMMENT                  = 'PATCH_COMMENT';
 export const RESET_COMMENT                  = 'RESET_COMMENT';
+
+export const GET_ALL_USERS                  = 'GET_ALL_USERS';
+export const PATCH_USER_ROLE                = 'PATCH_USER_ROLE';

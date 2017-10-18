@@ -21,7 +21,7 @@ class Bvkingimgz extends Component{
     }
 
     let content =
-      <div className="row">
+      <div className="container row">
         <Link to="/" className={linkClassName}>
           <img src={bvkingimgz_image} alt="bvkingimgz_image"/>
           <span className="bvkingimgz_image_text">imgz</span>

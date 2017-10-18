@@ -11,12 +11,12 @@ class Header extends Component{
       <div className="container my-5">
 
         <div className="row">
-          <div className="col-4">
+          <div className="col-12 col-md-4">
 
             <Bvkingimgz linkClassName={false} />
 
           </div>
-          <div className="col-8">
+          <div className="col-12 col-md-8">
             <h3>Bvikingimgz</h3>
             <div className="my-3">
               <div><span className="badge badge-default col-2">{ this.props.counters.users } </span><span className="col-10">users</span></div>
