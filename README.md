@@ -24,6 +24,9 @@
 1. `npm install / yarn install`
 2. `npm start`
 
+###### Heroku app - live:
+<pre>https://bvikingimgz.herokuapp.com</pre>
+
 ```
 
 -- Quick tutorial: bvikingimgz site - enjoy images --
