@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/actions';
 import { bindActionCreators } from 'redux';
 
+import SpanButton from "../Button/SpanButton";
+
+
 import Image from "./Image"
 
 import faker from "faker";
@@ -55,7 +58,27 @@ class Images extends Component{
     this.props.actions.removeImage(imageObj, this.props.users.role);
   };
 
+  addRandomImage = () => {
 
+    const imgLength       = this.props.images.length,
+      src             = `https://picsum.photos/200/200?random=${imgLength}`,
+      title           = faker.lorem.words(),
+      alt             = `img${imgLength}`,
+      thumbs_up_tot   = 0, // faker.random.number(100),
+      thumbs_down_tot = 0, // faker.random.number(100),
+      comments_tot    = 0; // faker.random.number(100);
+
+    const imageObj = {
+      src,
+      alt,
+      title,
+      thumbs_up_tot,
+      thumbs_down_tot,
+      comments_tot,
+    };
+
+    this.props.actions.postImages(imageObj)
+  };
 
 
   render(){
@@ -74,36 +97,17 @@ class Images extends Component{
       />
     });
 
-    const btns =         <div>
-      <span className="fa fa-eye fa-lg ctaBtn" aria-hidden="true" onClick={this.toggle}> Switch image view (all/user)</span>
-      <span className="fa fa-picture-o fa-lg ctaBtnAddImage" aria-hidden="true" title="add your random pic" onClick={() => {
-
-        const imgLength       = this.props.images.length,
-          src             = `https://picsum.photos/200/200?random=${imgLength}`,
-          title           = faker.lorem.words(),
-          alt             = `img${imgLength}`,
-          thumbs_up_tot   = 0, // faker.random.number(100),
-          thumbs_down_tot = 0, // faker.random.number(100),
-          comments_tot    = 0; // faker.random.number(100);
-
-        const imageObj = {
-          src,
-          alt,
-          title,
-          thumbs_up_tot,
-          thumbs_down_tot,
-          comments_tot,
-        };
-
-        this.props.actions.postImages(imageObj)
-      }}> Add a picture</span><br/>
-    </div>;
+    const btns =
+      <div>
+        <SpanButton text=" Switch image view (all/user)" fontClass="fa-eye" fontClassSize="fa-lg" cssExtra="ctaBtn"  onClick={this.toggle} />
+        <SpanButton text=" Add a picture" fontClass="fa-picture-o" fontClassSize="fa-lg" cssExtra="ctaBtnAddImage"  onClick={this.addRandomImage} />
+      </div>;
 
 
     return (
       <div className="container">
 
-        {this.props.users.email && btns}
+        {this.props.users && btns}
 
         <div className="row">
           {imagesMapped}

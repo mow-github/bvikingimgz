@@ -18,7 +18,11 @@ import User from "../User/User";
 import FormRegister from "../Form/FormRegister";
 import Footer from "../Footer/Footer";
 
+import SpanButton from "../Button/SpanButton";
+
+
 import firebase from "../../firebase"
+
 
 class App extends Component {
 
@@ -65,6 +69,13 @@ class App extends Component {
     firebase.auth().signOut();
   };
 
+  toggleUser = () => {
+    this.setState({ toggleUser: !this.state.toggleUser });
+  };
+  toggle = () => {
+    console.log("toggle");
+  };
+
   render() {
 
     const { users, actions } = this.props;
@@ -73,12 +84,16 @@ class App extends Component {
     return (
       <div className="App">
 
+
+
+
+
         <Navbar showModalLogin={this.showModalLogin}  signOut={this.signOut} />
         <Error errors={this.props.errors} updateError={this.props.actions.updateError} />
         <Header counters={this.props.counters} />
 
 
-        {users.role === "admin" && <span className="fa fa-user-circle-o fa-lg ctaBtn" aria-hidden="true" onClick={() => this.setState({ toggleUser: !toggleUser }) }> Toggle Admin / Images area</span> }
+        {users.role === "admin" && <SpanButton text=" Toggle Admin / Images area" fontClass="fa-user-circle-o" fontClassSize="fa-lg" cssExtra="ctaBtn"  onClick={this.toggleUser} /> }
         {toggleUser && <User /> }
         {!users && <FormRegister /> }
         {!toggleUser && <Images update_image_modal={this.update_image_modal} /> }
