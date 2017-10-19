@@ -12,8 +12,11 @@ export function userChanged(){
       if(user){
 
         firebase.database().ref(`users/${user.uid}`).once("value").then((user) => {
-          dispatch({ type: actionType.SIGN_IN, user: user.val() });
-          return user.val().images;
+
+          dispatch({
+            type: actionType.SIGN_IN,
+            user: {...user.val(), uid: user.key}
+          });
         }).then((imagesIndexObj) => {
 
         })
@@ -59,7 +62,7 @@ export function postImages(imageObj) {
 
 }
 export function removeImage(image, currentUserRole){
-  console.log("---removeImage");
+  //console.log("---removeImage");
   return function(dispatch){
 
     if(firebase.auth().currentUser){
@@ -69,11 +72,11 @@ export function removeImage(image, currentUserRole){
       let flag = false;
       if(currentUserRole === "admin"){
         // full access
-        console.log("just a admin -- removeImage");
+        //console.log("just a admin -- removeImage");
         flag = true;
       }else if( currentUserRole === "subscriber" && currentUserUid === image.uid ){
         // access to currentUser comments
-        console.log("subscriber and owner of the image -- removeImage");
+        //console.log("subscriber and owner of the image -- removeImage");
         flag = true;
       }else{
         const msg = "You are not the author or a admin";
@@ -81,7 +84,7 @@ export function removeImage(image, currentUserRole){
       }
 
       if(flag) {
-        console.log("FlAG TRUE",image);
+        //console.log("FlAG TRUE",image);
 
         if(image.comments){
           const commentsArray = Object.keys(image.comments);
@@ -104,8 +107,8 @@ export function removeImage(image, currentUserRole){
         }).then(() => {
           firebase.database().ref(`users/${image.uid}/images/${image.imgid}`).remove();
         }).then(() => {
-          console.log("images/image.imgid");
-          console.log("users/image.uid/images/image.imgid removed");
+          //console.log("images/image.imgid");
+          //console.log("users/image.uid/images/image.imgid removed");
         }).catch(error =>dispatch({type: "FETCH_ERROR", error}))
 
       }
@@ -123,7 +126,7 @@ export function removeAllImages(){
 
   return function(dispatch){
     firebase.database().ref(`images`).remove().then(() => {
-      console.log("removeAllImages from FB");
+      //console.log("removeAllImages from FB");
     }).catch((error) => {
       dispatch({type: "FETCH_ERROR", error})
     });
@@ -159,7 +162,7 @@ export function getComments(imgid) {
         const tmpArray = [];
         firebase.database().ref(`comments`).once("value").then((comments) => {
           cidIndicesArray.forEach((cid) => {
-            //console.log( cid );
+            ////console.log( cid );
             const commentObj = {...comments.val()[cid], cid};
             tmpArray.push(commentObj);
           });
@@ -177,7 +180,7 @@ export function getComments(imgid) {
     }else{
       // message
       const msg = "You are not logged in.. unable to fetch comments";
-      console.log(msg);
+      //console.log(msg);
       // hmm, unable to exec due to rendering component ?
       dispatch({type: "FETCH_ERROR", error:{message: msg} })
     }
@@ -198,7 +201,7 @@ export function postComment(commentObj) {
       firebase.database().ref("comments").push(commentObj).then((comment) => {
 
         const commentObjUpd = {...commentObj, cid: comment.key};
-console.log( ",", commentObjUpd );
+//console.log( ",", commentObjUpd );
         dispatch({
           type: actionType.POST_COMMENT,
           comment: commentObjUpd
@@ -240,11 +243,11 @@ export function removeComment(comment, currentUserRole) {
       let flag = false;
       if(currentUserRole === "admin"){
         // full access
-        console.log("just a admin -- removeComment");
+        //console.log("just a admin -- removeComment");
         flag = true;
       }else if( currentUserRole === "subscriber" && currentUserUid === comment.uid ){
         // access to currentUser comments
-        console.log("subscriber and owner of the comment -- removeComment");
+        //console.log("subscriber and owner of the comment -- removeComment");
         flag = true;
       }else{
         const msg = "You are not the author or a admin";
@@ -252,8 +255,8 @@ export function removeComment(comment, currentUserRole) {
       }
 
       if(flag) {
-        console.log("FlAG TRUE");
-        console.log(comment);
+        //console.log("FlAG TRUE");
+        //console.log(comment);
 
         firebase.database().ref(`comments/${comment.cid}`).remove().then(() => {
         }).then(() => {
@@ -261,9 +264,9 @@ export function removeComment(comment, currentUserRole) {
         }).then(() => {
           firebase.database().ref(`users/${comment.uid}/comments/${comment.cid}`).remove();
         }).then(() => {
-          console.log("comments/cid removed");
-          console.log("images/imgid/comments/cd removed");
-          console.log("users/uid/comments/cid removed");
+          //console.log("comments/cid removed");
+          //console.log("images/imgid/comments/cd removed");
+          //console.log("users/uid/comments/cid removed");
         }).catch(error =>dispatch({type: "FETCH_ERROR", error}))
 
       }
@@ -294,11 +297,11 @@ export function updateComment(comment, currentUserRole) {
       let flag = false;
       if(currentUserRole === "admin"){
         // full access
-        console.log("just a admin -- updateComment");
+        //console.log("just a admin -- updateComment");
         flag = true;
       }else if( currentUserRole === "subscriber" && currentUserUid === comment.uid ){
         // access to currentUser comments
-        console.log("subscriber and owner of the comment -- updateComment");
+        //console.log("subscriber and owner of the comment -- updateComment");
         flag = true;
       }else{
         const msg = "You are not the author or a admin";
@@ -306,9 +309,9 @@ export function updateComment(comment, currentUserRole) {
       }
 
       if(flag) {
-        console.log("FlAG TRUE");
+        //console.log("FlAG TRUE");
 
-        console.log(comment);
+        //console.log(comment);
         // we add a extra key/value: cid ( must exist.. so the path works, not neceassry in the patch )
         firebase.database().ref(`comments/${comment.cid}`).set(comment).then(() => {
 
@@ -328,7 +331,7 @@ export function updateComment(comment, currentUserRole) {
 export function getAllUsers(){
   return function(dispatch){
 
-console.log("---getAllUsers");
+//console.log("---getAllUsers");
     if(firebase.auth().currentUser) {
 
       // const loggedinUserUid = firebase.auth().currentUser.uid;
@@ -340,7 +343,7 @@ console.log("---getAllUsers");
           const childUserObj = {...childUser.val(), uid: childUser.key};
           usersall.push(childUserObj);
         });
-        console.log(usersall);
+        //console.log(usersall);
         dispatch({ type: actionType.GET_ALL_USERS, usersall });
       })
 
@@ -351,7 +354,7 @@ console.log("---getAllUsers");
 export function updateUserRole(user){
   return function(dispatch){
 
-console.log("---updateUserRole");
+//console.log("---updateUserRole");
     if(firebase.auth().currentUser) {
 
       user.role = user.role === "admin" ? "subscriber" : "admin";
@@ -359,7 +362,7 @@ console.log("---updateUserRole");
       delete userNoUid.uid;
 
       firebase.database().ref(`users/${user.uid}`).set(userNoUid).then(() => {
-        console.log("updated user role FB");
+        //console.log("updated user role FB");
         dispatch({ type: actionType.PATCH_USER_ROLE, user });
       }).catch((error) => {
         dispatch({type: "FETCH_ERROR", error})
@@ -375,7 +378,7 @@ export function removeAllUsers() {
   return function(dispatch){
 
     firebase.database().ref(`users`).remove().then(() => {
-      console.log("removeAllUsers from FB");
+      //console.log("removeAllUsers from FB");
     }).catch((error) => {
       dispatch({type: "FETCH_ERROR", error})
     });
@@ -391,7 +394,7 @@ export function removeLoggedinUserFB() {
       firebase.auth().currentUser.delete().then(() => {
         firebase.database().ref(`users/${uid}`).remove();
       }).then(() => {
-        console.log("remove Loggedin User FB + user FB row");
+        //console.log("remove Loggedin User FB + user FB row");
       }).catch((error) => {
         dispatch({type: "FETCH_ERROR", error})
       });
@@ -412,8 +415,8 @@ export function removeLoggedinUserFB() {
 
     try{
       const uid = firebase.auth().currentUser.uid;
-      console.log(uid);
-      console.log("FIX this.. vote and text CONNECTED to a user");
+      //console.log(uid);
+      //console.log("FIX this.. vote and text CONNECTED to a user");
 
     }catch(error){ dispatch({type: "FETCH_ERROR", error}) }
 
@@ -430,11 +433,11 @@ export function postVote(voteObj) {
 
       const {uid} = firebase.auth().currentUser;
       voteObj.uid = uid;
-      console.log("---", voteObj);
+      //console.log("---", voteObj);
 
       firebase.database().ref("votes").push(voteObj).then((vote) => {
         const voteObjUpd = {...voteObj, vid: vote.key};
-        console.log( ",", voteObjUpd );
+        //console.log( ",", voteObjUpd );
 
         // dispatch({ type: actionType.POST_VOTE, vote: voteObjUpd });
         dispatch({
@@ -462,7 +465,7 @@ export function postVote(voteObj) {
 
 // ------------------------------------- LISTENER IMAGES -----------------------------------------
 export function postImagesListener(){
-  console.log( "postImagesListener" );
+  //console.log( "postImagesListener" );
 
   return function(dispatch){
     firebase.database().ref("images")
@@ -470,7 +473,7 @@ export function postImagesListener(){
         const image = {...ss.val(), imgid: ss.key};
 
 
-        // console.log("child_added", image);
+        // //console.log("child_added", image);
 
         dispatch({
           type: actionType.POST_IMAGE,
@@ -496,7 +499,7 @@ export function postImagesListener(){
                   const commentsArray = Object.keys(image.comments);
                   commentsArray.forEach((cid) => {
                     firebase.database().ref(`comments/${cid}`).on("value", (ss) => {
-                    console.log("increment comments 1");
+                    //console.log("increment comments 1");
                       dispatch({
                         type: actionType.PATCH_IMAGE_COMMENT_UP_1,
                         imgid: image.imgid
@@ -512,13 +515,13 @@ export function postImagesListener(){
                     firebase.database().ref(`votes/${vid}`).on("value", (ss) => {
                       const value = ss.val().value;
                       if(value === 1){
-                        console.log( "thumbs_up_tot: +1" );
+                        //console.log( "thumbs_up_tot: +1" );
                         dispatch({
                           type: actionType.PATCH_IMAGE_THUMB_UP_1,
                           imgid: image.imgid
                         });
                       }else if(value === -1){
-                        console.log( "thumbs_down_tot: +1" );
+                        //console.log( "thumbs_down_tot: +1" );
                         dispatch({
                           type: actionType.PATCH_IMAGE_THUMB_DOWN_1,
                           imgid: image.imgid
@@ -566,14 +569,14 @@ export function deleteImageListener(){
   }
 }
 export function updateImagesListener(){
-  console.log( "updateImagesListener" );
+  //console.log( "updateImagesListener" );
 
   return function(dispatch){
     firebase.database().ref("images")
       .on("child_changed", (ss) => {
-        const image = {...ss.val(), imgid: ss.key};
+        // const image = {...ss.val(), imgid: ss.key};
 
-        console.log( "child_changed -- updateImagesListener ", image);
+        //console.log( "child_changed -- updateImagesListener ", image);
 
 
       })
@@ -583,7 +586,7 @@ export function updateImagesListener(){
 
 // ------------------------------------- LISTENER COMMENTS -----------------------------------------
 export function postCommentsListener(){
-  console.log( "postCommentsListener" );
+  //console.log( "postCommentsListener" );
 
   return function(dispatch){
     firebase.database().ref("comments")
@@ -592,7 +595,7 @@ export function postCommentsListener(){
         const comment = {...ss.val(), cid: ss.key};
 
 
-        // console.log("child_added -- comment -- ", comment);
+        // //console.log("child_added -- comment -- ", comment);
 
         dispatch({
           type: actionType.PATCH_IMAGE_COMMENT_UP_1,
@@ -610,7 +613,7 @@ export function postCommentsListener(){
   }
 }
 export function removeCommentsListener(){
-  console.log( "removeCommentsListener" );
+  //console.log( "removeCommentsListener" );
 
   return function(dispatch){
     firebase.database().ref("comments").on("child_removed", (ss) => {
@@ -630,12 +633,12 @@ export function removeCommentsListener(){
   }
 }
 export function updateCommentsListener(){
-  console.log( "updateCommentsListener" );
+  //console.log( "updateCommentsListener" );
 
   return function(dispatch){
     firebase.database().ref("comments").on("child_changed", (ss) => {
       const cid = ss.key;
-      console.log("-----", cid, ss.val() );
+      //console.log("-----", cid, ss.val() );
 
       dispatch({
         type: actionType.PATCH_COMMENT,
@@ -649,7 +652,7 @@ export function updateCommentsListener(){
 
 // ------------------------------------- LISTENER USER -----------------------------------------
 export function postUserListener(){
-  console.log( "postUserListener" );
+  //console.log( "postUserListener" );
 
   return function(dispatch){
     firebase.database().ref("users")
@@ -665,7 +668,7 @@ export function postUserListener(){
   }
 }
 export function updateUsersListener(){
-  console.log( "updateUsersListener" );
+  //console.log( "updateUsersListener" );
 
   return function(dispatch){
     firebase.database().ref("users")
@@ -680,6 +683,43 @@ export function updateUsersListener(){
       })
   }
 }
+export function removeUsersListener(){
+  //console.log( "removeUsersListener" );
+
+  return function(dispatch){
+    firebase.database().ref("users").on("child_removed", (ss) => {
+      const { votes, images, comments } = ss.val();
+
+      dispatch({
+        type: actionType.COUNT_USER_NEG,
+        userCount: 1
+      });
+
+      if(votes){
+        const votesArray = Object.keys(votes);
+        votesArray.forEach((vid) => {
+          firebase.database().ref(`votes/${vid}`).remove();
+        });
+      }
+
+      if(images){
+        const imagesArray = Object.keys(images);
+        imagesArray.forEach((imgid) => {
+          firebase.database().ref(`images/${imgid}`).remove();
+        });
+      }
+
+      if(comments){
+        const commentsArray = Object.keys(comments);
+        commentsArray.forEach((cid) => {
+          firebase.database().ref(`comments/${cid}`).remove();
+        });
+      }
+
+
+    })
+  }
+}
 // ------------------------------------- LISTENER USER -----------------------------------------
 
 // ------------------------------------- LISTENER VOTES -----------------------------------------
@@ -691,7 +731,7 @@ export function postVotesListener(){
 
         const vote = {...ss.val(), vid: ss.key};
 
-        // console.log("child_added -- vote listener", vote);
+        // //console.log("child_added -- vote listener", vote);
         if(vote.value === 1){
           dispatch({
             type: actionType.PATCH_IMAGE_THUMB_UP_1,
@@ -714,9 +754,9 @@ export function removeVotesListener(){
     firebase.database().ref("votes")
       .on("child_removed", (ss) => {
 
-        const vote = {...ss.val(), vid: ss.key};
-        console.log( vote );
-        console.log("------------------------VOTES REMOVED - not active in app.js yet");
+        //const vote = {...ss.val(), vid: ss.key};
+        //console.log( vote );
+        //console.log("------------------------VOTES REMOVED - not active in app.js yet");
 
 
       })
@@ -748,7 +788,7 @@ export function setError(error) {
   return function(dispatch){
 
     firebase.database().ref(`images`).once("value").then((images) => {
-      console.log("getAllImages from FB");
+      //console.log("getAllImages from FB");
 
       let tmpArray = [];
       images.forEach((child) => {

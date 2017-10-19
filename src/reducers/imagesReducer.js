@@ -26,7 +26,7 @@ export default function errors(state = initialState.images, action) {
 
       state.filter(image => {
         if(image.imgid === action.comment.imgid){
-          console.log("..",image);
+          // console.log("..",image);
 
           image.comments = {...image.comments,  [action.comment.cid]:{ [action.comment.cid]: true } };
         }
@@ -38,7 +38,7 @@ export default function errors(state = initialState.images, action) {
 
       state.filter(image => {
         if(image.imgid === action.vote.imgid){
-          console.log("..",image);
+          // console.log("..",image);
 
           image.votes = {...image.votes,  [action.vote.vid]:{ [action.vote.vid]: true } };
         }

@@ -102,12 +102,12 @@ class FormRegister extends Component{
 
   registerOAuth = (provider) => {
 
-    console.log("provider register - registerOAuth");
+    //console.log("provider register - registerOAuth");
 
     firebase.auth().signInWithPopup(provider)
       .then((authData) => {
 
-        console.log(authData);
+        //console.log(authData);
         const { user, additionalUserInfo } = authData;
 
         const newUser = {
@@ -119,7 +119,7 @@ class FormRegister extends Component{
         firebase.database().ref(`users/${user.uid}`).set(newUser);
 
       }).catch((error) => {
-      console.log(error);
+      //console.log(error);
       let password = this.state.password;
       password.classMsg = "danger";
       password.feedback_msg = error.message;

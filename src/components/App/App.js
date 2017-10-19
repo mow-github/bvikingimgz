@@ -46,6 +46,7 @@ class App extends Component {
     // listen for DELETE "removed" in FB collection
     actions.deleteImageListener();
     actions.removeCommentsListener();
+    actions.removeUsersListener();
 
     // listen for PUT/PATCH "update" in FB collection
     actions.updateImagesListener();
@@ -77,7 +78,7 @@ class App extends Component {
         <Header counters={this.props.counters} />
 
 
-        {users.role === "admin" && <button className="btn btn-danger" onClick={() => this.setState({ toggleUser: !toggleUser }) }>Toggle Admin / Images area</button> }
+        {users.role === "admin" && <span className="fa fa-user-circle-o fa-lg ctaBtn" aria-hidden="true" onClick={() => this.setState({ toggleUser: !toggleUser }) }> Toggle Admin / Images area</span> }
         {toggleUser && <User /> }
         {!users && <FormRegister /> }
         {!toggleUser && <Images update_image_modal={this.update_image_modal} /> }

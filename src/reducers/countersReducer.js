@@ -13,6 +13,9 @@ export default function counters(state = initialState.counters, action) {
     case actionType.COUNT_COMMENT:
       state.comments += action.commentCount;
       return {...state};
+    case actionType.COUNT_USER_NEG:
+      state.users -= action.userCount;
+      return {...state};
     default:
       return state;
   }

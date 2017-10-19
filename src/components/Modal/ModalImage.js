@@ -17,21 +17,21 @@ class ModalImage extends Component {
 
   postComment = (e) => {
     e.preventDefault();
-    console.log("form submitted");
+    //console.log("form submitted");
 
     const text = this.state.postComment;
-    const timestampRaw = new Date();//this.state.timestampRaw;
+    const timestampRaw = Date.now();//this.state.timestampRaw;
     const imgid = this.props.image_modal.imgid;
 
     const commentObj = { timestampRaw, text, imgid };
-    console.log( commentObj );
+    //console.log( commentObj );
 
     this.props.actions.postComment(commentObj);
   };
 
   componentDidMount(){
 /*    this.props.actions.getComments(this.props.image_modal.imgid)
-    console.log(1);*/
+    //console.log(1);*/
   }
 
   render() {
@@ -39,7 +39,7 @@ class ModalImage extends Component {
     if(!this.props.showModalImage) {
 
       if(this.props.comments.length > 0){
-        console.log("reset comments array.. must click open comments btn again");
+        //console.log("reset comments array.. must click open comments btn again");
         this.props.actions.resetComments();
       }
       return null;

@@ -28,11 +28,11 @@
 
 -- Quick tutorial: bvikingimgz site - enjoy images --
 
-1. Register with Oauth or with the local form ( note: the redirect to "/" inc redux state.. F5 and reload atm)
+1. Register with Oauth or with the local form
 2. Use the login button ( upper right )
-3. Click the orange button to add "random image"
- - test inc thumbs button beneath every image
- - test open a image ( click the grey button ) and leave a comment
+3. Click the "Add a picture" button
+ - test: the inc up- OR down- thumbs button beneath every image
+ - test: open a image ( click the grey button ) and leave a comment
 4. A comment may be deleted and updated ( use the mini btns next to the comment )
  - One can also delete the entire image
 

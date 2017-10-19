@@ -128,7 +128,21 @@ a:hover{
 
 
 
-
+.ctaBtn{
+  padding: 0.5rem;
+  cursor: pointer;
+  opacity: 0.5;
+  display: block;
+}
+.ctaBtnAddImage{
+  padding: 0.5rem;
+  cursor: pointer;
+  display: block;
+}
+.ctaBtn:hover{
+  text-decoration: underline;
+  opacity: 1;
+}
 
 
 

@@ -15,10 +15,19 @@ class Images extends Component{
 
   toggle = () => {
     if(!this.props.users.images){
-      return this.props.actions.setError("Unable to toggle images - no difference from the rest");
+      return this.props.actions.setError("Unable to toggle images - make sure that you have unique images");
     }
+
     const imageKeys = Object.keys(this.props.users.images);
     const imagesAll = this.props.images;
+
+    // //console.log("x users images:", imageKeys.length);
+    // //console.log("x images tot:", imagesAll.length);
+
+    if(imageKeys.length === imagesAll.length){
+      return this.props.actions.setError("No difference all vs user images... abort");
+    }
+
 
     let userImages = Object.keys(imagesAll)
       .filter((imagePos) => imageKeys.includes( imagesAll[imagePos].imgid) ? imagePos : null )
@@ -32,17 +41,17 @@ class Images extends Component{
   };
 
   incrementLike = (voteObj) => {
-    console.log("increment",voteObj);
+    //console.log("increment",voteObj);
     this.props.actions.postVote(voteObj);
   };
 
   decrementLike = (voteObj) => {
-    console.log("decrement",voteObj);
+    //console.log("decrement",voteObj);
     this.props.actions.postVote(voteObj);
   };
 
   removeImage = (imageObj) => {
-    console.log("removeImage",imageObj);
+    //console.log("removeImage",imageObj);
     this.props.actions.removeImage(imageObj, this.props.users.role);
   };
 
@@ -61,13 +70,13 @@ class Images extends Component{
                     incrementLike={this.incrementLike}
                     decrementLike={this.decrementLike}
                     removeImage={this.removeImage}
+                    currentUserUid={this.props.users.uid}
       />
     });
 
     const btns =         <div>
-      <button className="btn col-12 col-md-4 toggleBtn" onClick={this.toggle}>Toggle all / user imgz</button>
-      <br/>
-      <button className="btn btn-warning col-12 col-md-4 py-5 randomImageBtn" onClick={() => {
+      <span className="fa fa-eye fa-lg ctaBtn" aria-hidden="true" onClick={this.toggle}> Switch image view (all/user)</span>
+      <span className="fa fa-picture-o fa-lg ctaBtnAddImage" aria-hidden="true" title="add your random pic" onClick={() => {
 
         const imgLength       = this.props.images.length,
           src             = `https://picsum.photos/200/200?random=${imgLength}`,
@@ -87,7 +96,7 @@ class Images extends Component{
         };
 
         this.props.actions.postImages(imageObj)
-      }}>Add your random pic</button><br/>
+      }}> Add a picture</span><br/>
     </div>;
 
 

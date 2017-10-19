@@ -33,8 +33,10 @@ class ModalLogin extends Component {
       .auth()
       .signInWithEmailAndPassword(email.value,password.value)
       .catch(error => {
-        console.log(error);
-        // show friendly user error msg
+        let password = this.state.password;
+        password.classMsg = "danger";
+        password.feedback_msg = error.message;
+        this.setState({ password })
       })
 
   };
@@ -42,13 +44,13 @@ class ModalLogin extends Component {
 
   loginOAuth = (provider) => {
 
-    console.log("provider login - loginOAuth");
+    //console.log("provider login - loginOAuth");
 
     firebase.auth().signInWithPopup(provider)
       .then((authData) => {
-        console.log(authData);
+        //console.log(authData);
       }).catch((error) => {
-      console.log(error);
+      //console.log(error);
       let password = this.state.password;
       password.classMsg = "danger";
       password.feedback_msg = error.message;

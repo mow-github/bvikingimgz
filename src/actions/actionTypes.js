@@ -27,6 +27,7 @@ export const PATCH_IMAGE_COMMENT_UP_1       = 'PATCH_IMAGE_COMMENT_UP_1';
 
 export const COUNT_IMAGE                    = 'COUNT_IMAGE';
 export const COUNT_USER                     = 'COUNT_USER';
+export const COUNT_USER_NEG                 = 'COUNT_USER_NEG';
 export const COUNT_COMMENT                  = 'COUNT_COMMENT';
 
 export const POST_COMMENT                   = 'POST_COMMENT';
