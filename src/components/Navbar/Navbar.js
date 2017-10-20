@@ -36,7 +36,7 @@ class Navbar extends Component{
 
             </div>
             <div className="navbar-nav ml-auto">
-              {/*{!this.props.users && <Link className="nav-item nav-link ml-5" to="/register">Register</Link> }*/}
+              {!this.props.users && <Link className="nav-item nav-link ml-5" to="/register">Register</Link> }
               {!this.props.users && <button type="button" className="btn btn-primary" onClick={() => this.props.showModalLogin(true)}>login modal</button>}
               {this.props.users && <button className="btn btn-danger" onClick={this.props.signOut}>signOut - { this.props.users.email }</button> }
             </div>
