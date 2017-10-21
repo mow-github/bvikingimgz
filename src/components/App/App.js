@@ -15,7 +15,7 @@ import ModalImage from "../Modal/ModalImage";
 import Error from "../Error/Error";
 
 import User from "../User/User";
-import FormRegister from "../Form/FormRegister";
+/*import FormRegister from "../Form/FormRegister";*/
 import Footer from "../Footer/Footer";
 
 import SpanButton from "../Button/SpanButton";
@@ -36,26 +36,28 @@ class App extends Component {
 
 
   componentDidMount(){
+    // stop this from exec. on redirect
+    if(this.props.history.action === "POP") {
+      const {actions} = this.props;
 
-    const {actions} = this.props;
+      actions.userChanged();
 
-    actions.userChanged();
+      // listen for POST "added" in FB collection
+      actions.postImagesListener();
+      actions.postUserListener();
+      actions.postCommentsListener();
+      actions.postVotesListener();
 
-    // listen for POST "added" in FB collection
-    actions.postImagesListener();
-    actions.postUserListener();
-    actions.postCommentsListener();
-    actions.postVotesListener();
+      // listen for DELETE "removed" in FB collection
+      actions.deleteImageListener();
+      actions.removeCommentsListener();
+      actions.removeUsersListener();
 
-    // listen for DELETE "removed" in FB collection
-    actions.deleteImageListener();
-    actions.removeCommentsListener();
-    actions.removeUsersListener();
-
-    // listen for PUT/PATCH "update" in FB collection
-    actions.updateImagesListener();
-    actions.updateUsersListener();
-    actions.updateCommentsListener();
+      // listen for PUT/PATCH "update" in FB collection
+      actions.updateImagesListener();
+      actions.updateUsersListener();
+      actions.updateCommentsListener();
+    }
 
   }
 
@@ -95,7 +97,7 @@ class App extends Component {
 
         {users.role === "admin" && <SpanButton text=" Toggle Admin / Images area" fontClass="fa-user-circle-o" fontClassSize="fa-lg" cssExtra="ctaBtn"  onClick={this.toggleUser} /> }
         {toggleUser && <User /> }
-        {!users && <FormRegister /> }
+{/*        {!users && <FormRegister /> }*/}
         {!toggleUser && <Images update_image_modal={this.update_image_modal} /> }
 
 

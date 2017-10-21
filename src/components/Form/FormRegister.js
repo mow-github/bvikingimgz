@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-// import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import * as actions from '../../actions/actions';
@@ -118,7 +118,10 @@ class FormRegister extends Component{
 
         firebase.database().ref(`users/${user.uid}`).set(newUser);
 
-      }).catch((error) => {
+      }).then(() => {
+        this.setState({ redirect: true });
+      })
+      .catch((error) => {
       //console.log(error);
       let password = this.state.password;
       password.classMsg = "danger";
@@ -132,8 +135,8 @@ class FormRegister extends Component{
   render(){
 
     if (this.state.redirect || this.props.users) {
-      // this.props.actions.redirectAcessDenied("You don't have access to this path if you are logged in");
-      // return <Redirect to='/'/>;
+      this.props.actions.redirectAcessDenied("You don't have access to this path if you are logged in");
+      return <Redirect to='/'/>;
     }
 
     const {
